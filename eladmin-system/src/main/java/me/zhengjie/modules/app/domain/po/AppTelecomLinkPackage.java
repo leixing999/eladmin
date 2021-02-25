@@ -28,7 +28,7 @@ public class AppTelecomLinkPackage implements Serializable {
 	@Id
 	@ApiModelProperty(value = "自增量")
 	@Column(name = "id", nullable = true, length = 20)
-	private Long id;
+	private String id;
 
 	/**
 	 * 包含app链接的文件名
