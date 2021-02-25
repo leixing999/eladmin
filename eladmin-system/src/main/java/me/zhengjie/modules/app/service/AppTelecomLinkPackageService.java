@@ -13,4 +13,5 @@ import javax.annotation.Resource;
  */
 public interface AppTelecomLinkPackageService {
 
+
 }

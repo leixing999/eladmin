@@ -27,8 +27,8 @@ public class AppTelecomLink implements Serializable {
 	 */
 	@Id
 	@ApiModelProperty(value = "自增量，主键")
-	@Column(name = "id", nullable = true, length = 20)
-	private Long id;
+	@Column(name = "id", nullable = true, length = 30)
+	private String id;
 
 	/**
 	 * app关联电信诈骗APP文件编号
