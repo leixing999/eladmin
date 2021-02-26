@@ -3,10 +3,13 @@ package me.zhengjie.modules.app.service.impl;
 import me.zhengjie.modules.app.domain.po.AppTelecomLinkPackage;
 import me.zhengjie.modules.app.repository.AppTelecomLinkPackageRepository;
 import me.zhengjie.modules.app.service.AppTelecomLinkPackageService;
+import me.zhengjie.utils.RequestHolder;
+import me.zhengjie.utils.StringUtils;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -28,6 +31,10 @@ public class AppTelecomLinkPackageServiceImpl implements AppTelecomLinkPackageSe
 	 */
 	@Override
 	public void saveAppTelecomLinkPackage(AppTelecomLinkPackage appTelecomLinkPackage) {
+
+		HttpServletRequest request = RequestHolder.getHttpServletRequest();
+		String ip = StringUtils.getIp(request);
+		appTelecomLinkPackage.setIp(ip);
 		if(appTelecomLinkPackageRepository.findAppTelecomLinkPackageByLinkPackageName(appTelecomLinkPackage.getLinkPackageName()).size()==0){
 			appTelecomLinkPackageRepository.save(appTelecomLinkPackage);
 		}

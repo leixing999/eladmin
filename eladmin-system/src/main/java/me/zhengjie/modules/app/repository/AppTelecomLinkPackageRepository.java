@@ -48,7 +48,7 @@ public interface AppTelecomLinkPackageRepository extends JpaRepository<AppTeleco
                  " set link_package_parse_line= ?3 ," +
                  " link_package_parse_begin_time=?2 " +
                  " where id= ?1 ",nativeQuery = true)
-    void updateLinkPackage(String id, Date beginTime, Integer currentLines);
+    void updateLinkPackage(@Param("id") String id, @Param("beginTime")  Date beginTime,@Param("currentLines") Integer currentLines);
 
 
     /****

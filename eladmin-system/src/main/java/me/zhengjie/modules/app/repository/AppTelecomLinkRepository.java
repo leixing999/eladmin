@@ -37,7 +37,7 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
             " app_package_name=:#{#appTelecomLink.appPackageName}," +
             " app_version=:#{#appTelecomLink.appVersion}," +
             " app_update_time=:#{#appTelecomLink.appUpdateTime}" +
-            " where  app_file_name=:#{#appTelecomLink.appFileName}",nativeQuery = true)
+            " where  id=:#{#appTelecomLink.id}",nativeQuery = true)
     void updateAppTelecomLink(@Param("appTelecomLink") AppTelecomLink appTelecomLink);
 
 }

@@ -7,10 +7,13 @@ import me.zhengjie.annotation.Log;
 import me.zhengjie.annotation.rest.AnonymousPostMapping;
 import me.zhengjie.modules.app.domain.po.AppTelecomLinkPackage;
 import me.zhengjie.modules.app.service.AppTelecomLinkPackageService;
+import me.zhengjie.utils.RequestHolder;
+import me.zhengjie.utils.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Api(tags="电信App文件")
@@ -36,7 +39,7 @@ public class AppTelecomLinkPackageController {
 
     @Log("修改电信App文件包信息解析开始时间")
     @ApiOperation("修改电信App文件包信息解析开始时间")
-    @AnonymousPostMapping(value="/updateLinkPackageTime")
+    @AnonymousPostMapping(value="/updateLinkPackageBeginTime")
     public void updateLinkPackage(@RequestParam String id, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date beginTime, @RequestParam Integer currentLines){
         appTelecomLinkPackageService.updateLinkPackage(id,beginTime,currentLines);
     }
@@ -45,7 +48,7 @@ public class AppTelecomLinkPackageController {
     @Log("修改电信解析包状态、当前行和状态")
     @ApiOperation("修改电信解析包状态、当前行和状态")
     @AnonymousPostMapping(value="/updateLinkPackageEndTime")
-    public void updateLinkPackage(@RequestParam String id, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date beginTime, @RequestParam Integer currentLines,Integer status){
-        appTelecomLinkPackageService.updateLinkPackage(id,beginTime,currentLines,status);
+    public void updateLinkPackage(@RequestParam String id, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date endTime, @RequestParam Integer currentLines,Integer status){
+        appTelecomLinkPackageService.updateLinkPackage(id,endTime,currentLines,status);
     }
 }

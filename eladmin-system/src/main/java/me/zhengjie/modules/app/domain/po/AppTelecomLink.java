@@ -155,4 +155,5 @@ public class AppTelecomLink implements Serializable {
 	@ApiModelProperty(value = "app更新时间")
 	@Column(name = "app_update_time", nullable = true)
 	private java.util.Date appUpdateTime;
+
 }
