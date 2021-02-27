@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 
+import java.util.List;
+
 /**
  * AppTelecomWhitelistPermission 自定义Service实现层
  * 白名单App 权限操作服务类
@@ -27,5 +29,10 @@ public class AppTelecomWhitelistPermissionServiceImpl implements AppTelecomWhite
 	@Override
 	public void saveAppWhitePermission(AppTelecomWhitelistPermission appTelecomWhitelistPermission) {
 		appTelecomWhitelistPermissionRepository.save(appTelecomWhitelistPermission);
+	}
+
+	@Override
+	public void saveBatchAppWhitePermission(List<AppTelecomWhitelistPermission> list) {
+		appTelecomWhitelistPermissionRepository.saveAll(list);
 	}
 }

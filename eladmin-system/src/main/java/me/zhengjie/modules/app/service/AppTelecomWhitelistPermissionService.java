@@ -5,6 +5,7 @@ import me.zhengjie.modules.app.repository.AppTelecomWhitelistPermissionRepositor
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * AppTelecomWhitelistPermission service层
@@ -15,5 +16,6 @@ import javax.annotation.Resource;
 public interface AppTelecomWhitelistPermissionService {
 
     void saveAppWhitePermission(AppTelecomWhitelistPermission appTelecomWhitelistPermission);
+    void saveBatchAppWhitePermission(List<AppTelecomWhitelistPermission> list);
 
 }

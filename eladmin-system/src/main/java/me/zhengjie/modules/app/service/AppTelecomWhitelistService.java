@@ -1,5 +1,6 @@
 package me.zhengjie.modules.app.service;
 
+import me.zhengjie.domain.ApkInfo;
 import me.zhengjie.modules.app.domain.po.AppTelecomWhitelist;
 import me.zhengjie.modules.app.domain.po.AppTelecomWhitelistPermission;
 import me.zhengjie.modules.app.repository.AppTelecomWhitelistRepository;
@@ -18,5 +19,6 @@ public interface AppTelecomWhitelistService {
 
      void saveAppWhite(AppTelecomWhitelist appTelecomWhitelist);
      void saveAppWhiteAndPermission(AppTelecomWhitelist appTelecomWhitelist, List<AppTelecomWhitelistPermission> appTelecomWhitelistPermissionList);
+     void runAppWhiteList(ApkInfo apkInfo);
 
 }

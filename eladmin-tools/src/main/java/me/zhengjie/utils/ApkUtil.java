@@ -38,9 +38,10 @@ public class ApkUtil {
     //linux下
     //private String mAaptPath = "/usr/local/apktool/aapt";
 
-    public ApkUtil() {
+    public ApkUtil(String mAaptPath) {
         mBuilder = new ProcessBuilder();
         mBuilder.redirectErrorStream(true);
+        this.mAaptPath = mAaptPath;
     }
 
     /**

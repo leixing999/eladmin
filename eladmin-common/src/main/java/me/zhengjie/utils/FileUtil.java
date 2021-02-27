@@ -341,5 +341,18 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     public static String getMd5(File file) {
         return getMd5(getByte(file));
     }
+    public static File[]  search(String filePath){
+        File directory = new File(filePath);
+        File[] txtFiles = directory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().endsWith(extension);
+            }
+
+            String extension = ".apk";
+
+        });
+        return txtFiles;
+    }
 
 }

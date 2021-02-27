@@ -1,14 +1,19 @@
 package me.zhengjie.modules.app.service.impl;
 
+import me.zhengjie.domain.ApkInfo;
 import me.zhengjie.modules.app.domain.po.AppTelecomWhitelist;
 import me.zhengjie.modules.app.domain.po.AppTelecomWhitelistPermission;
 import me.zhengjie.modules.app.repository.AppTelecomWhitelistRepository;
+import me.zhengjie.modules.app.service.AppTelecomLinkService;
 import me.zhengjie.modules.app.service.AppTelecomWhitelistPermissionService;
 import me.zhengjie.modules.app.service.AppTelecomWhitelistService;
+import me.zhengjie.utils.HashUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,18 +50,40 @@ public class AppTelecomWhitelistServiceImpl implements AppTelecomWhitelistServic
 
 		try{
 			String appWhiteId = appTelecomWhitelist.getAppApplicationName()+"_"+appTelecomWhitelist.getAppClassName()+"_"+appTelecomWhitelist.getAppPackageName();
+			appWhiteId = ""+ HashUtil.uuid(appWhiteId);
 			appTelecomWhitelist.setId(appWhiteId);
 			this.saveAppWhite(appTelecomWhitelist);
 			for(AppTelecomWhitelistPermission appTelecomWhitelistPermission : appTelecomWhitelistPermissionList){
 				String appWhitePermissionId = appWhiteId + appTelecomWhitelistPermission.getPermission();
+				appWhitePermissionId = ""+HashUtil.uuid(appWhitePermissionId);
 				appTelecomWhitelistPermission.setId(appWhitePermissionId);
-				appTelecomWhitelistPermissionService.saveAppWhitePermission(appTelecomWhitelistPermission);
+				appTelecomWhitelistPermission.setRelId(appWhiteId);
+
 			}
+			appTelecomWhitelistPermissionService.saveBatchAppWhitePermission(appTelecomWhitelistPermissionList);
 
 		}catch(Exception ex){
 
 			System.out.println(ex);
 		}
+	}
+
+	@Override
+	public void runAppWhiteList(ApkInfo apkInfo) {
+		AppTelecomWhitelist appTelecomWhitelist = new AppTelecomWhitelist();
+		appTelecomWhitelist.setAppApplicationName(apkInfo.getApplicationLable());
+		appTelecomWhitelist.setAppClassName(apkInfo.getLaunchableActivity());
+		appTelecomWhitelist.setAppPackageName(apkInfo.getPackageName());
+		appTelecomWhitelist.setStatus(1);
+		appTelecomWhitelist.setAppVersion(apkInfo.getVersionName());
+		List<AppTelecomWhitelistPermission> permissionList = new ArrayList<>();
+		for(String permission : apkInfo.getUsesPermissions()){
+			AppTelecomWhitelistPermission appTelecomWhitelistPermission = new AppTelecomWhitelistPermission();
+			appTelecomWhitelistPermission.setPermission(permission);
+			permissionList.add(appTelecomWhitelistPermission);
+		}
+		this.saveAppWhiteAndPermission(appTelecomWhitelist,permissionList);
+
 	}
 
 

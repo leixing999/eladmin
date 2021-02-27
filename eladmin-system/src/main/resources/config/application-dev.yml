@@ -115,6 +115,10 @@ file:
   windows:
     path: C:\eladmin\file\
     avatar: C:\eladmin\avatar\
+  aapt:
+    path: E:\aapt
+  apk:
+    path: D:\备份\apk\未检测
   # 文件大小 /M
   maxSize: 100
   avatarMaxSize: 5
