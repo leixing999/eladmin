@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * AppTelecomLinkPackage service层
@@ -22,6 +23,8 @@ public interface AppTelecomLinkPackageService {
      void updateLinkPackage(String id, Date beginTime, Integer currentLines);
 
      void updateLinkPackage(String id, Date EndTime, Integer currentLines,Integer status);
+     List<AppTelecomLinkPackage> findLinkPackageByFileName(String fileName);
+     List<AppTelecomLinkPackage> findLinkPackageByStatus(Integer status);
 
 
 }

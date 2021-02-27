@@ -40,6 +40,15 @@ public class AppTelecomLinkPackage implements Serializable {
 	private String linkPackageName;
 
 	/**
+	 * 包含app链接的文件的路径
+	 * nullable : true
+	 * default  : null
+	 */
+	@ApiModelProperty(value = "包含app链接的文件的路径")
+	@Column(name = "link_package_path", nullable = true, length = 200)
+	private String linkPackagePath;
+
+	/**
 	 * 上传者IP地址
 	 * nullable : true
 	 * default  : null

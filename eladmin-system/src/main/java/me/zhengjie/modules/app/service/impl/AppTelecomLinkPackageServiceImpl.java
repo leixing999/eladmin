@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.CacheConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 /**
  * AppTelecomLinkPackage 自定义Service实现层
@@ -71,5 +72,20 @@ public class AppTelecomLinkPackageServiceImpl implements AppTelecomLinkPackageSe
 	@Override
 	public void updateLinkPackage(String id, Date endTime, Integer currentLines, Integer status) {
 		appTelecomLinkPackageRepository.updateLinkPackage(id,endTime,currentLines,status);
+	}
+
+	/***
+	 * 通过文件名完全匹配是否文件已经入库
+	 * @param fileName
+	 * @return
+	 */
+	@Override
+	public List<AppTelecomLinkPackage> findLinkPackageByFileName(String fileName) {
+		return	appTelecomLinkPackageRepository.findAppTelecomLinkPackageByLinkPackageName(fileName);
+	}
+
+	@Override
+	public List<AppTelecomLinkPackage> findLinkPackageByStatus(Integer status) {
+		return appTelecomLinkPackageRepository.findAppTelecomLinkPackageByLinkPackageStatus(status);
 	}
 }

@@ -115,10 +115,15 @@ file:
   windows:
     path: C:\eladmin\file\
     avatar: C:\eladmin\avatar\
+  ####静态解析APK的aapt存放地址
   aapt:
     path: E:\aapt
   apk:
-    path: D:\备份\apk\未检测
+    ####白名单APK存放地址
+    path: D:\BaiduNetdiskDownload\APK
+    ####存放电信推送电信诈骗url文件地址
+    urlPath: D:\apk\apk1234.txt
+
   # 文件大小 /M
   maxSize: 100
   avatarMaxSize: 5

@@ -17,8 +17,24 @@ import java.util.List;
  */
 public interface AppTelecomWhitelistService {
 
+     /***
+      * 增加app 白名单库
+      * @param appTelecomWhitelist
+      */
      void saveAppWhite(AppTelecomWhitelist appTelecomWhitelist);
+
+     /****
+      * 增加APP 白名单库下的权限信息
+      * @param appTelecomWhitelist
+      * @param appTelecomWhitelistPermissionList
+      */
      void saveAppWhiteAndPermission(AppTelecomWhitelist appTelecomWhitelist, List<AppTelecomWhitelistPermission> appTelecomWhitelistPermissionList);
-     void runAppWhiteList(ApkInfo apkInfo);
+
+     /****
+      * 对APP进行静态分析
+      * @param apkInfo
+      * @param fileName
+      */
+     void runAppWhiteList(ApkInfo apkInfo,String fileName);
 
 }

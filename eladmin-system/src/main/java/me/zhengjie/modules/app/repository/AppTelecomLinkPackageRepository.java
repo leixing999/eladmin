@@ -27,6 +27,14 @@ public interface AppTelecomLinkPackageRepository extends JpaRepository<AppTeleco
     List<AppTelecomLinkPackage> findAppTelecomLinkPackageByLinkPackageName(String linkPackageName);
 
     /****
+     * 按照解析状态待处理的文件
+     * 默认找status(0)的文件
+     * @param status
+     * @return
+     */
+    List<AppTelecomLinkPackage> findAppTelecomLinkPackageByLinkPackageStatus(Integer status);
+
+    /****
      * 修改电信解析包状态
      * @param id
      * @param currentLines

@@ -32,13 +32,15 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
             for(File file : files){
                 try {
                     ApkInfo apkInfo = new ApkUtil(aaptPath).getApkInfo(file.getPath());
-                    appTelecomWhitelistService.runAppWhiteList(apkInfo);
+                    String fileName = file.getName();
+                    appTelecomWhitelistService.runAppWhiteList(apkInfo,fileName);
                 }catch (Exception ex){
-
                     System.out.println(ex);
+                }finally {
+                    //删除静态分析入库文件
+                    file.delete();
                 }
             }
-
 
     }
 }

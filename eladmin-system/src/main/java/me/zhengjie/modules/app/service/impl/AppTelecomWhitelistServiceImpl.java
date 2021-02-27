@@ -69,12 +69,13 @@ public class AppTelecomWhitelistServiceImpl implements AppTelecomWhitelistServic
 	}
 
 	@Override
-	public void runAppWhiteList(ApkInfo apkInfo) {
+	public void runAppWhiteList(ApkInfo apkInfo,String fileName) {
 		AppTelecomWhitelist appTelecomWhitelist = new AppTelecomWhitelist();
 		appTelecomWhitelist.setAppApplicationName(apkInfo.getApplicationLable());
 		appTelecomWhitelist.setAppClassName(apkInfo.getLaunchableActivity());
 		appTelecomWhitelist.setAppPackageName(apkInfo.getPackageName());
 		appTelecomWhitelist.setStatus(1);
+		appTelecomWhitelist.setAppFilename(fileName);
 		appTelecomWhitelist.setAppVersion(apkInfo.getVersionName());
 		List<AppTelecomWhitelistPermission> permissionList = new ArrayList<>();
 		for(String permission : apkInfo.getUsesPermissions()){
