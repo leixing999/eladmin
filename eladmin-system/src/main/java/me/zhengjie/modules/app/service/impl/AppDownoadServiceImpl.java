@@ -1,5 +1,6 @@
 package me.zhengjie.modules.app.service.impl;
 
+import me.zhengjie.modules.app.domain.po.AppTelecomLink;
 import me.zhengjie.modules.app.domain.po.AppTelecomLinkPackage;
 import me.zhengjie.modules.app.domain.vo.UrlPathVO;
 import me.zhengjie.modules.app.service.AppDownloadService;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class AppDownoadServiceImpl implements AppDownloadService {
@@ -60,12 +62,13 @@ public class AppDownoadServiceImpl implements AppDownloadService {
 
     /***
      * 实现分页查询 下载链接队列
-     * @param urlPathVOList
-     * @param maxThread
-     * @param currentIndex
+     * @param urlPathVOList url解析队列
+     * @param maxThread 最大分页数
+     * @param currentIndex 当前分页索引
+     * @param isEnd 是否下载结束标识
      * @return
      */
-    private List<UrlPathVO>pagesUrlPath(List<UrlPathVO> urlPathVOList,int maxThread,int currentIndex){
+    private List<UrlPathVO>pagesUrlPath(List<UrlPathVO> urlPathVOList,int maxThread,int currentIndex,Boolean isEnd){
         List<UrlPathVO> tempUrlPathVOList = null;
         int startIndex = currentIndex * maxThread;
         int endIndex = (currentIndex + 1) * maxThread;
@@ -74,6 +77,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
             tempUrlPathVOList = urlPathVOList.subList(startIndex, endIndex);
         } else {
             tempUrlPathVOList = urlPathVOList.subList(startIndex, urlPathVOList.size()-1);
+            isEnd = false;
 
         }
         return tempUrlPathVOList;
@@ -81,7 +85,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
 
     /***
      * 去掉重复的APP下载链接
-     * @param urlPathVOList
+     * @param urlPathVOList url解析队列
      * @return
      */
     private List<UrlPathVO>delayRepeatUrlPath(List<UrlPathVO> urlPathVOList){
@@ -90,6 +94,44 @@ public class AppDownoadServiceImpl implements AppDownloadService {
                         Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(UrlPathVO::getApkFileName))), ArrayList::new)
         );
         return uniqueUrlPath;
+    }
+
+    /***
+     * 生成线程下载callable队列
+     * @param urlPathVOList
+     * @param appSavePath
+     * @param fileId
+     * @param maxFileSize
+     * @return
+     */
+    private List<ThreadDownloadCallable>createThreadDownloadCallable(List<UrlPathVO> urlPathVOList,String appSavePath,String fileId,long maxFileSize){
+      List<ThreadDownloadCallable>  threadCallableList = new ArrayList<>();
+      for(UrlPathVO urlPathVO : urlPathVOList){
+          ThreadDownloadCallable threadCallable = new ThreadDownloadCallable(urlPathVO,appSavePath,fileId,maxFileSize);
+          threadCallableList.add(threadCallable);
+      }
+      return threadCallableList;
+    }
+
+    /****
+     * 执行多线程下载队列
+     * @param threadCallableList
+     * @param executor
+     * @return
+     */
+    private List<Future<AppTelecomLink>> executeDownloadThreads(List<ThreadDownloadCallable> threadCallableList,ExecutorService executor){
+        List<Future<AppTelecomLink>> futures = null;
+        try {
+            //获取本批次线程执行队列结果信息
+            futures = executor.invokeAll(threadCallableList);
+            for (int i = 0; i < futures.size(); i++) {
+                //log.info(futures.get(i).get());
+            }
+        } catch (Exception e) {
+
+        } finally {
+        }
+        return futures;
     }
     /***
      * 保存电信传递的可疑诈骗APK文件地址信息
@@ -123,13 +165,22 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         //获取一批次下载的URL路径信息
         List<UrlPathVO> pageList = null;
         //判断是否完成批量下载
-        boolean isEnd = true;
+        Boolean isEnd = true;
+        String appSavePath ="";
+        long maxFileSize = 10l;
         int maxThread = 10;
         while (isEnd) {
-            //按照每个处理队列最大线程数进行分页
-            pageList = this.pagesUrlPath(urlPathVOList,maxThread,nextIndex);
-            //将分页的数据进行去重处理
+            //按照每个处理队列最大线程数进行分页（1）
+            pageList = this.pagesUrlPath(urlPathVOList,maxThread,nextIndex,isEnd);
+            //将分页的数据进行去重处理（2）
             pageList = this.delayRepeatUrlPath(pageList);
+            //获取多线程下载队列（3)
+            List<ThreadDownloadCallable> threadCallableList = this.createThreadDownloadCallable(pageList,appSavePath, linkPackage.getId(), maxFileSize);
+
+            //执行多线程下载队列(4)
+            List<Future<AppTelecomLink>> appLinkFutureList = this.executeDownloadThreads(threadCallableList,executor);
+            //获取下批次线程索引值
+            nextIndex++;
 
         }
 
