@@ -94,6 +94,24 @@ public class AppTelecomLink implements Serializable {
 	private Integer appIsDown;
 
 	/**
+	 * app是否下载（0：未下载，1：下载成功，-1：下载异常）
+	 * nullable : true
+	 * default  : 0
+	 */
+	@ApiModelProperty(value = "（0：待分析，1：分析完，-1：分析异常")
+	@Column(name = "app_is_analyse", nullable = true, length = 11)
+	private Integer appIsAnalyse;
+
+	/**
+	 * （1:黑名单APP，2：手工处理分析APP
+	 * nullable : true
+	 * default  : 0
+	 */
+	@ApiModelProperty(value = "（1:黑名单APP，2：手工处理分析APP")
+	@Column(name = "app_type", nullable = true, length = 11)
+	private Integer appType;
+
+	/**
 	 * app下载花费时间
 	 * nullable : true
 	 * default  : 0

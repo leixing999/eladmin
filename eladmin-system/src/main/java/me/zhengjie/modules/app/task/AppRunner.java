@@ -1,7 +1,5 @@
 package me.zhengjie.modules.app.task;
 
-import me.zhengjie.modules.app.repository.AppDictRepository;
-import me.zhengjie.modules.app.service.AppDictService;
 import me.zhengjie.modules.app.service.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -23,12 +21,30 @@ public class AppRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
+        //启动静态分析线程
+        new Thread(){
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        appService.staticAnalyseApp();
+                        Thread.sleep(100000);
+                    }catch (Exception ex){
+                        System.out.println(ex);
+                    }
 
+                }
+            }
+        }.start();
+
+        //启动文件分析处理方式
         while(true){
             try {
-                //appService.saveAppUrlFiles();
+                appService.saveAppUrlFiles();
                 appService.parseAppUrlFiles();
-              //  appService.runAppWhiteList();
+                //appService.runAppWhiteList();
+                //appService.staticAnalyseApp();
+
                 Thread.sleep(10000);
             }catch (Exception ex){
                 System.out.println(ex);

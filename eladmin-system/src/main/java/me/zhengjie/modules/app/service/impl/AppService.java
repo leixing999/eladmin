@@ -2,6 +2,7 @@ package me.zhengjie.modules.app.service.impl;
 
 import me.zhengjie.domain.ApkInfo;
 import me.zhengjie.modules.app.service.AppDownloadService;
+import me.zhengjie.modules.app.service.AppTelecomLinkService;
 import me.zhengjie.modules.app.service.AppTelecomWhitelistService;
 import me.zhengjie.utils.ApkUtil;
 import me.zhengjie.utils.FileUtil;
@@ -24,6 +25,9 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
     AppTelecomWhitelistService appTelecomWhitelistService;
     @Autowired
     AppDownloadService appDownloadService;
+
+    @Autowired
+    AppTelecomLinkService appTelecomLinkService;
     /****
      *保存电信传递的可疑诈骗APK文件地址信息
      */
@@ -59,4 +63,13 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
             }
 
     }
+
+    /****
+     * 静态分析APP
+     */
+    @Override
+    public void staticAnalyseApp() {
+        appTelecomLinkService.staticAnalyseApp();
+    }
+
 }

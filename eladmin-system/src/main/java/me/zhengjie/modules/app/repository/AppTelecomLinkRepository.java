@@ -24,6 +24,14 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
      */
     List<AppTelecomLink> findAppTelecomLinkByAppFileName(String appFileName);
 
+    /*****
+     * 搜索没有静态分析的APP
+     * @param isAnalyse
+     * @param isDown
+     * @return
+     */
+    List<AppTelecomLink> findAppTelecomLinkByAppIsAnalyseAndAppIsDown(int isAnalyse,int isDown);
+
     /****
      * 通过对app进行静态分析对此App的参数信息进行跟新
      * @param appTelecomLink
@@ -39,5 +47,23 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
             " app_update_time=:#{#appTelecomLink.appUpdateTime}" +
             " where  id=:#{#appTelecomLink.id}",nativeQuery = true)
     void updateAppTelecomLink(@Param("appTelecomLink") AppTelecomLink appTelecomLink);
+
+    /****
+     * 通过对app进行静态分析对此App的参数信息进行跟新
+     * @param appTelecomLink
+     */
+    @Modifying
+    @Transactional
+    @Query(value=" update app_telecom_link " +
+            " set " +
+            " app_class_name=:#{#appTelecomLink.appClassName}," +
+            " app_application_name=:#{#appTelecomLink.appApplicationName}," +
+            " app_package_name=:#{#appTelecomLink.appPackageName}," +
+            " app_version=:#{#appTelecomLink.appVersion}," +
+            " app_update_time=:#{#appTelecomLink.appUpdateTime}," +
+            " app_is_analyse=:#{#appTelecomLink.appIsAnalyse}, " +
+            " app_type=:#{#appTelecomLink.appType} " +
+            " where  id=:#{#appTelecomLink.id}",nativeQuery = true)
+    void updateAppLink(@Param("appTelecomLink") AppTelecomLink appTelecomLink);
 
 }

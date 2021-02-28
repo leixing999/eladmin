@@ -5,6 +5,7 @@ import me.zhengjie.modules.app.repository.AppPermissionRepository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * AppPermission service层
@@ -15,4 +16,5 @@ import javax.annotation.Resource;
 public interface AppPermissionService {
 
     public void saveAppPermission(AppPermission appPermission);
+    public void saveBatchAppPermission(List<AppPermission> list);
 }

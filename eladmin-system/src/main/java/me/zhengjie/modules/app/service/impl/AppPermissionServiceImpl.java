@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 
+import java.util.List;
+
 /**
  * AppPermission 自定义Service实现层
  *
@@ -21,5 +23,14 @@ public class AppPermissionServiceImpl implements AppPermissionService {
 	private final AppPermissionRepository appPermissionRepository;
 	public void saveAppPermission(AppPermission appPermission){
 		appPermissionRepository.save(appPermission);
+	}
+
+	/****
+	 * 批量保存app权限信息
+	 * @param list
+	 */
+	@Override
+	public void saveBatchAppPermission(List<AppPermission> list) {
+		appPermissionRepository.saveAll(list);
 	}
 }

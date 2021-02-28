@@ -3,6 +3,8 @@ package me.zhengjie.modules.app.repository;
 import me.zhengjie.modules.app.domain.po.AppTelecomWhitelist;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * AppTelecomWhitelist Repository层
  *
@@ -11,4 +13,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface AppTelecomWhitelistRepository extends JpaRepository<AppTelecomWhitelist, String> {
 
+    /***
+     * 通过应用名、类名以及包名比对是否APP在白名单中
+     * @param appName
+     * @param appClassName
+     * @param appPackName
+     * @return
+     */
+    List<AppTelecomWhitelist> findByAppApplicationNameAndAndAppClassNameAndAndAppPackageName(String appName, String appClassName, String appPackName);
 }
