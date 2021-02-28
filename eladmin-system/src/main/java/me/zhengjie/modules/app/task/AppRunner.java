@@ -22,9 +22,9 @@ public class AppRunner implements ApplicationRunner {
 
         while(true){
             try {
-                appService.saveAppUrlFiles();
+                //appService.saveAppUrlFiles();
                 appService.parseAppUrlFiles();
-                appService.runAppWhiteList();
+              //  appService.runAppWhiteList();
                 Thread.sleep(10000);
             }catch (Exception ex){
                 System.out.println(ex);

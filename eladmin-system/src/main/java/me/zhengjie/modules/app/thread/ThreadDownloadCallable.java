@@ -38,13 +38,14 @@ public class ThreadDownloadCallable implements Callable<AppTelecomLink> {
 
         if (isDown || isLimit) {
             appTelecomLink = new AppTelecomLink();
-            appTelecomLink.setAppFileName(appTelecomLink.getAppFileName());
+            appTelecomLink.setAppFileName(urlPathVO.getApkFileName());
             appTelecomLink.setAppOriginLink(urlPathVO.getOrignUrlPath());
             appTelecomLink.setAppFileSize(fileSize);
             appTelecomLink.setAppIsDown( isDown ? 1:-1);
             appTelecomLink.setId(UUID.randomUUID().toString());
             appTelecomLink.setAppRelFileId(this.fileId);
             appTelecomLink.setAppAddTime(new Date());
+
             appTelecomLink.setAppDownloadSpendTime(Integer.parseInt(""+(endTime-beginTime)));
         }
 

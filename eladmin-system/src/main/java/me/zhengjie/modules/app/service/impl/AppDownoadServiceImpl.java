@@ -29,8 +29,20 @@ public class AppDownoadServiceImpl implements AppDownloadService {
     @Autowired
     UrlPathService urlPathService;
    // 存放电信推送电信诈骗url文件地址
-    @Value("file.apk.urlPath")
+    @Value("${file.apk.urlPath}")
     String urlPath;
+    //支持每批次最多几个线程下载
+    @Value("${file.apk.maxThread}")
+    int maxThread;
+    //支持下载的最大文件限制
+    @Value("${file.apk.maxFileSize}")
+    long maxFileSize;
+    //app 下载保存的路径
+    @Value("${file.apk.appSavePath}")
+    String  appSavePath;
+
+
+
     /*****
      * 扫描电信传递的可以诈骗APK下载地址文件
      * @return
@@ -67,7 +79,12 @@ public class AppDownoadServiceImpl implements AppDownloadService {
             linkPackage.setLinkPackageName(file.getName());
             linkPackage.setLinkPackageSize(file.length());
             linkPackage.setLinkPackageAddTime(new Date());
+            linkPackage.setLinkPackageParseBeginTime(new Date());
+            linkPackage.setLinkPackageParseEndTime(new Date());
             linkPackage.setLinkPackageStatus(0);
+            linkPackage.setLinkPackageLines(0l);
+            linkPackage.setIp("");
+            linkPackage.setLinkPackageParseLine(0l);
             linkPackage.setId(HashUtil.uuid(file.getName()));
             //将电信传递的可疑诈骗文件信息入库
             appTelecomLinkPackageService.saveAppTelecomLinkPackage(linkPackage);
@@ -169,7 +186,10 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         for(Future<AppTelecomLink> appTelecomLinkFuture : futureList){
             try {
                 AppTelecomLink appTelecomLink = appTelecomLinkFuture.get();
-                appTelecomLinkService.saveAppTelecomLink(appTelecomLink);
+                if(appTelecomLink!=null){
+                    appTelecomLinkService.saveAppTelecomLink(appTelecomLink);
+                }
+
             }catch(Exception ex){
                 System.out.println(ex);
             }
@@ -193,9 +213,6 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         List<UrlPathVO> pageList = null;
         //判断是否完成批量下载
         Boolean isEnd = true;
-        String appSavePath ="";
-        long maxFileSize = 10l;
-        int maxThread = 10;
         //如果索引为0，则更新开始时间和索引位置
         if(nextIndex==0){
             appTelecomLinkPackageService.updateLinkPackage(linkPackage.getId(),new Date(),nextIndex);

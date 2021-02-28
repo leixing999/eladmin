@@ -33,9 +33,13 @@ public class AppTelecomLinkPackageServiceImpl implements AppTelecomLinkPackageSe
 	@Override
 	public void saveAppTelecomLinkPackage(AppTelecomLinkPackage appTelecomLinkPackage) {
 
-		HttpServletRequest request = RequestHolder.getHttpServletRequest();
-		String ip = StringUtils.getIp(request);
-		appTelecomLinkPackage.setIp(ip);
+		try {
+			HttpServletRequest request = RequestHolder.getHttpServletRequest();
+			String ip = StringUtils.getIp(request);
+			appTelecomLinkPackage.setIp(ip);
+		}catch(Exception ex){
+			System.out.println(ex);
+		}
 		if(appTelecomLinkPackageRepository.findAppTelecomLinkPackageByLinkPackageName(appTelecomLinkPackage.getLinkPackageName()).size()==0){
 			appTelecomLinkPackageRepository.save(appTelecomLinkPackage);
 		}
