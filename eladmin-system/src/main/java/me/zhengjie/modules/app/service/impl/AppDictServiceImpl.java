@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.CacheConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * AppDict 自定义Service实现层
@@ -32,5 +33,18 @@ public class AppDictServiceImpl implements AppDictService {
 	@Override
 	public List<AppDict> getAppDicts() {
 		return appDictList;
+	}
+
+	@Override
+	public List<AppDict> getAppDictsByType(int type) {
+		List<AppDict> appDictByTypeList = new ArrayList<>();
+		appDictByTypeList = appDictList.stream().filter(s->s.getType()==type).collect(Collectors.toList());
+		return appDictByTypeList;
+	}
+
+	@Override
+	public List<AppDict> appDictFilter(int type, String sensDict) {
+		List<AppDict> appDictByTypeList = this.getAppDictsByType(type);
+		return appDictByTypeList.stream().filter(s->sensDict.indexOf(s.getDictValue())>0).collect(Collectors.toList());
 	}
 }

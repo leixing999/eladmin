@@ -102,16 +102,21 @@ public class AppDownoadServiceImpl implements AppDownloadService {
      */
     private List<UrlPathVO>pagesUrlPath(List<UrlPathVO> urlPathVOList,int maxThread,int currentIndex,Boolean isEnd){
         List<UrlPathVO> tempUrlPathVOList = null;
-        int startIndex = currentIndex * maxThread;
-        int endIndex = (currentIndex + 1) * maxThread;
-        //获取本次队列要下载的APK路径队列
-        if (endIndex < urlPathVOList.size()) {
-            tempUrlPathVOList = urlPathVOList.subList(startIndex, endIndex);
-        } else {
-            tempUrlPathVOList = urlPathVOList.subList(startIndex, urlPathVOList.size()-1);
-            isEnd = false;
+      try {
+          int startIndex = currentIndex * maxThread;
+          int endIndex = (currentIndex + 1) * maxThread;
+          //获取本次队列要下载的APK路径队列
+          if (endIndex < urlPathVOList.size()) {
+              tempUrlPathVOList = urlPathVOList.subList(startIndex, endIndex);
+          } else {
+              tempUrlPathVOList = urlPathVOList.subList(startIndex, urlPathVOList.size() - 1);
+              isEnd = false;
 
-        }
+          }
+      }catch(Exception ex){
+          System.out.println(ex);
+          isEnd = false;
+      }
         return tempUrlPathVOList;
     }
 
@@ -220,6 +225,10 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         while (isEnd) {
             //按照每个处理队列最大线程数进行分页（1）
             pageList = this.pagesUrlPath(urlPathVOList,maxThread,nextIndex,isEnd);
+            if(pageList ==null){
+                isEnd = false;
+                break;
+            }
             //将分页的数据进行去重处理（2）
             pageList = this.delayRepeatUrlPath(pageList);
             //去掉已经下载过得APP(3)

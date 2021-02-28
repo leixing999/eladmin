@@ -23,6 +23,6 @@ public class AppDictRunner implements ApplicationRunner {
     AppDictRepository appDictRepository;
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        appDictService.initAppDict(appDictRepository.findAll());
+        appDictService.initAppDict(appDictRepository.getAppDictsByStatus(1));
     }
 }

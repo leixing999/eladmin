@@ -1,10 +1,12 @@
 package me.zhengjie.modules.app.service.impl;
 
 import me.zhengjie.modules.app.domain.vo.UrlPathVO;
+import me.zhengjie.modules.app.service.AppDictService;
 import me.zhengjie.utils.ConverPercent;
 import me.zhengjie.utils.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 @Service
 public class UrlPathService {
     private static final Logger log = LoggerFactory.getLogger(UrlPathService.class);
+    @Autowired
+    AppDictService appDictService;
 
     public List<UrlPathVO>parseApkUrlPath(String apkFilePath){
         List<String> list = FileUtil.getFileRecords(apkFilePath);
@@ -47,7 +51,11 @@ public class UrlPathService {
 //            pathVO.setApkFileName(new Random().nextInt(10000)+apkFileName);
             pathVO.setApkFileName(apkFileName);
 
-            urlPathVOList.add(pathVO);
+            if(appDictService.appDictFilter(0,requestUrlPath).size()==0){
+                urlPathVOList.add(pathVO);
+            }
+
+
         }
 
         return urlPathVOList;

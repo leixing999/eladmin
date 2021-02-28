@@ -17,4 +17,7 @@ public interface AppDictService {
     void initAppDict(List<AppDict> list);
     List<AppDict> getAppDicts();
 
+    List<AppDict> getAppDictsByType(int type);
+    List<AppDict> appDictFilter(int type,String sensDict);
+
 }

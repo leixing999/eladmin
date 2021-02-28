@@ -3,6 +3,8 @@ package me.zhengjie.modules.app.repository;
 import me.zhengjie.modules.app.domain.po.AppDict;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * AppDict Repository层
  *
@@ -11,4 +13,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface AppDictRepository extends JpaRepository<AppDict, Long> {
 
+    List<AppDict> getAppDictsByStatus(int status);
 }
