@@ -10,30 +10,19 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /***
- * 启动默认扫描电信apk文件扫描和解析服务
+ * 启动默认加载字典信息
  * @author xinglei
- * @date 2021-02-21
+ * @date 2021-02-28
  */
 @Component
 @Order(1)
-public class AppRunner implements ApplicationRunner {
-
+public class AppDictRunner implements ApplicationRunner {
     @Autowired
-    AppService appService;
+    AppDictService appDictService;
+    @Autowired
+    AppDictRepository appDictRepository;
     @Override
     public void run(ApplicationArguments args) throws Exception {
-
-
-        while(true){
-            try {
-                //appService.saveAppUrlFiles();
-                appService.parseAppUrlFiles();
-              //  appService.runAppWhiteList();
-                Thread.sleep(10000);
-            }catch (Exception ex){
-                System.out.println(ex);
-            }
-        }
-
+        appDictService.initAppDict(appDictRepository.findAll());
     }
 }
