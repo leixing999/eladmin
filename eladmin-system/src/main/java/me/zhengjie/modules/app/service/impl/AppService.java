@@ -1,6 +1,7 @@
 package me.zhengjie.modules.app.service.impl;
 
 import me.zhengjie.domain.ApkInfo;
+import me.zhengjie.modules.app.service.AppDownloadService;
 import me.zhengjie.modules.app.service.AppTelecomWhitelistService;
 import me.zhengjie.utils.ApkUtil;
 import me.zhengjie.utils.FileUtil;
@@ -21,6 +22,21 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
 
     @Autowired
     AppTelecomWhitelistService appTelecomWhitelistService;
+    @Autowired
+    AppDownloadService appDownloadService;
+    /****
+     *保存电信传递的可疑诈骗APK文件地址信息
+     */
+    @Override
+    public void saveAppUrlFiles() {
+        appDownloadService.saveAppUrlFiles();
+    }
+
+    @Override
+    public void parseAppUrlFiles() {
+
+        appDownloadService.parseAppUrlFiles();
+    }
 
     /***
      * 静态解析apk包信息

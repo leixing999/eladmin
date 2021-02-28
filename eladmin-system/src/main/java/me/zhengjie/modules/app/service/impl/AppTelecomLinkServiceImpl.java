@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 
+import java.util.List;
+
 /**
  * AppTelecomLink 自定义Service实现层
  *
@@ -41,5 +43,10 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 	@Override
 	public void updateAppTelecomLink(AppTelecomLink appTelecomLink) {
 		appTelecomLinkRepository.updateAppTelecomLink(appTelecomLink);
+	}
+
+	@Override
+	public List<AppTelecomLink> findAppLinkByAppName(String fileName) {
+		return appTelecomLinkRepository.findAppTelecomLinkByAppFileName(fileName);
 	}
 }

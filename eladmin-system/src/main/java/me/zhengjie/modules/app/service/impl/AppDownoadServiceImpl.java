@@ -5,11 +5,13 @@ import me.zhengjie.modules.app.domain.po.AppTelecomLinkPackage;
 import me.zhengjie.modules.app.domain.vo.UrlPathVO;
 import me.zhengjie.modules.app.service.AppDownloadService;
 import me.zhengjie.modules.app.service.AppTelecomLinkPackageService;
+import me.zhengjie.modules.app.service.AppTelecomLinkService;
 import me.zhengjie.modules.app.thread.ThreadDownloadCallable;
 import me.zhengjie.utils.FileUtil;
 import me.zhengjie.utils.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.*;
@@ -18,9 +20,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+@Service
 public class AppDownoadServiceImpl implements AppDownloadService {
     @Autowired
     AppTelecomLinkPackageService appTelecomLinkPackageService;
+    @Autowired
+    AppTelecomLinkService appTelecomLinkService;
     @Autowired
     UrlPathService urlPathService;
    // 存放电信推送电信诈骗url文件地址
@@ -35,7 +40,17 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         File files[] = FileUtil.searchApkUrl(urlPath);
         return files;
     }
+    /***
+     * 保存电信传递的可疑诈骗APK文件地址信息
+     */
+    @Override
+    public void saveAppUrlFiles() {
+        File files[] = this.searchAppUrlFile();
+        for(File file : files){
+            this.saveAppUrlFile(file);
+        }
 
+    }
     /***
      * 保存指定的电信传递的可疑诈骗APK文件
      * @param file
@@ -97,6 +112,22 @@ public class AppDownoadServiceImpl implements AppDownloadService {
     }
 
     /***
+     * 去掉已经下载过的APP
+     * @param urlPathVOList
+     * @return
+     */
+    private List<UrlPathVO>delayFinishedDownloadUrlPath(List<UrlPathVO> urlPathVOList){
+
+        List<UrlPathVO> noFinishedUrlPathList = new ArrayList<>();
+        for(UrlPathVO urlPathVO : urlPathVOList){
+            if(appTelecomLinkService.findAppLinkByAppName(urlPathVO.getApkFileName()).size()==0){
+                noFinishedUrlPathList.add(urlPathVO);
+            }
+        }
+        return noFinishedUrlPathList;
+    }
+
+    /***
      * 生成线程下载callable队列
      * @param urlPathVOList
      * @param appSavePath
@@ -124,26 +155,28 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         try {
             //获取本批次线程执行队列结果信息
             futures = executor.invokeAll(threadCallableList);
-            for (int i = 0; i < futures.size(); i++) {
-                //log.info(futures.get(i).get());
-            }
-        } catch (Exception e) {
-
-        } finally {
+        } catch (Exception ex) {
+            System.out.println(ex);
         }
         return futures;
     }
-    /***
-     * 保存电信传递的可疑诈骗APK文件地址信息
-     */
-    @Override
-    public void saveAppUrlFiles() {
-        File files[] = this.searchAppUrlFile();
-        for(File file : files){
-            this.saveAppUrlFile(file);
-        }
 
+    /****
+     * 处理线程下载结果信息
+     * @param futureList
+     */
+    private void delayAppThreadDownloadResult(List<Future<AppTelecomLink>> futureList){
+        for(Future<AppTelecomLink> appTelecomLinkFuture : futureList){
+            try {
+                AppTelecomLink appTelecomLink = appTelecomLinkFuture.get();
+                appTelecomLinkService.saveAppTelecomLink(appTelecomLink);
+            }catch(Exception ex){
+                System.out.println(ex);
+            }
+        }
     }
+
+
     /****
      * 解析电信传递App Url 文件
      * @param linkPackage
@@ -154,14 +187,8 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         List<UrlPathVO> urlPathVOList = urlPathService.parseApkUrlPath(linkPackage.getLinkPackagePath());
         //配置每次下载启动10个线程，每个线程下载对应的一个文件
         ExecutorService executor = Executors.newFixedThreadPool(10);
-        //apk现在线程队列
-        List<ThreadDownloadCallable> myThreadList = null;
         //获取上次下载的电信APK包文件位置
         int nextIndex = Integer.parseInt(""+linkPackage.getLinkPackageParseLine());
-        //每次线程批量下载的开始索引
-        int startIndex = 0;
-        //每次线程批量下载的结束索引
-        int endIndex = 0;
         //获取一批次下载的URL路径信息
         List<UrlPathVO> pageList = null;
         //判断是否完成批量下载
@@ -169,20 +196,33 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         String appSavePath ="";
         long maxFileSize = 10l;
         int maxThread = 10;
+        //如果索引为0，则更新开始时间和索引位置
+        if(nextIndex==0){
+            appTelecomLinkPackageService.updateLinkPackage(linkPackage.getId(),new Date(),nextIndex);
+        }
         while (isEnd) {
             //按照每个处理队列最大线程数进行分页（1）
             pageList = this.pagesUrlPath(urlPathVOList,maxThread,nextIndex,isEnd);
             //将分页的数据进行去重处理（2）
             pageList = this.delayRepeatUrlPath(pageList);
-            //获取多线程下载队列（3)
+            //去掉已经下载过得APP(3)
+            pageList = this.delayFinishedDownloadUrlPath(pageList);
+            //获取多线程下载队列（4)
             List<ThreadDownloadCallable> threadCallableList = this.createThreadDownloadCallable(pageList,appSavePath, linkPackage.getId(), maxFileSize);
-
-            //执行多线程下载队列(4)
+            //执行多线程下载队列(5)
             List<Future<AppTelecomLink>> appLinkFutureList = this.executeDownloadThreads(threadCallableList,executor);
+            //处理线程处理结果信息（6）
+            this.delayAppThreadDownloadResult(appLinkFutureList);
+            //完成本批次下载，同时更新下载索引状态（7）
+            appTelecomLinkPackageService.updateLinkPackage(linkPackage.getId(),nextIndex);
             //获取下批次线程索引值
             nextIndex++;
 
+
         }
+        //更新执行完毕操作【完成时间以及完成状态】（8）
+        appTelecomLinkPackageService.updateLinkPackage(linkPackage.getId(),new Date(),nextIndex,2);
+        executor.shutdown();
 
     }
     /***

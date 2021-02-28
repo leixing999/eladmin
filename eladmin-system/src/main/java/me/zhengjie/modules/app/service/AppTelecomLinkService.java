@@ -5,6 +5,7 @@ import me.zhengjie.modules.app.repository.AppTelecomLinkRepository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * AppTelecomLink service层
@@ -14,6 +15,7 @@ import javax.annotation.Resource;
  */
 public interface AppTelecomLinkService {
 
-    public void saveAppTelecomLink(AppTelecomLink appTelecomlink);
+    void saveAppTelecomLink(AppTelecomLink appTelecomlink);
     void updateAppTelecomLink(AppTelecomLink appTelecomLink);
+    List<AppTelecomLink> findAppLinkByAppName(String fileName);
 }
