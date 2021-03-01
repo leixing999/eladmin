@@ -139,6 +139,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private TokenConfigurer securityConfigurerAdapter() {
         return new TokenConfigurer(tokenProvider, properties, onlineUserService, userCacheClean);
+
     }
 
     private Map<String, Set<String>> getAnonymousUrl(Map<RequestMappingInfo, HandlerMethod> handlerMethodMap) {
