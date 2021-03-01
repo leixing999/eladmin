@@ -29,6 +29,8 @@ public class AppTelecomWhitelistServiceImpl implements AppTelecomWhitelistServic
 
 	private final AppTelecomWhitelistRepository appTelecomWhitelistRepository;
 	private final AppTelecomWhitelistPermissionService appTelecomWhitelistPermissionService;
+	@Value("${file.apk.isPermission}")
+	int isPermission;
 
 
 	/***
@@ -53,14 +55,17 @@ public class AppTelecomWhitelistServiceImpl implements AppTelecomWhitelistServic
 			appWhiteId = ""+ HashUtil.uuid(appWhiteId);
 			appTelecomWhitelist.setId(appWhiteId);
 			this.saveAppWhite(appTelecomWhitelist);
-			for(AppTelecomWhitelistPermission appTelecomWhitelistPermission : appTelecomWhitelistPermissionList){
+			///是否开启权限入库
+			if(isPermission==1){
+				for(AppTelecomWhitelistPermission appTelecomWhitelistPermission : appTelecomWhitelistPermissionList){
 				String appWhitePermissionId = appWhiteId + appTelecomWhitelistPermission.getPermission();
 				appWhitePermissionId = ""+HashUtil.uuid(appWhitePermissionId);
 				appTelecomWhitelistPermission.setId(appWhitePermissionId);
 				appTelecomWhitelistPermission.setRelId(appWhiteId);
-
+			  }
+				appTelecomWhitelistPermissionService.saveBatchAppWhitePermission(appTelecomWhitelistPermissionList);
 			}
-			appTelecomWhitelistPermissionService.saveBatchAppWhitePermission(appTelecomWhitelistPermissionList);
+
 
 		}catch(Exception ex){
 

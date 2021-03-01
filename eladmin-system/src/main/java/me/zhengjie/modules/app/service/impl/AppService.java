@@ -58,7 +58,7 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
                     System.out.println(ex);
                 }finally {
                     //删除静态分析入库文件
-                    file.delete();
+                   // file.delete();
                 }
             }
 

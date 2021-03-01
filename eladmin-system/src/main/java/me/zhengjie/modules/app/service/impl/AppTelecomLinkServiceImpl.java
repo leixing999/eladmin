@@ -39,6 +39,8 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 	/***apk路径***/
 	@Value("${file.apk.appSavePath}")
 	String appSavePath;
+	@Value("${file.apk.isPermission}")
+	int isPermission;
 
 	/***
 	 * 对电信App下载信息进行插入保存
@@ -109,17 +111,20 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 				else if (appDictService.appDictFilter(1,appTelecomLink.getAppApplicationName()).size()>0){
 					appTelecomLink.setAppType(1);
 				}
-				//获取APP权限列表
-				List<AppPermission> permissionList = new ArrayList<>();
-				for(String permission : apkInfo.getUsesPermissions()){
-					AppPermission appPermission = new AppPermission();
-					appPermission.setId(UUID.randomUUID().toString());
-					appPermission.setAppLinkId(appTelecomLink.getId());
-					appPermission.setAppPermissionName(permission);
-					permissionList.add(appPermission);
+				//是否开启权限操作
+				if(isPermission==1) {
+					//获取APP权限列表
+					List<AppPermission> permissionList = new ArrayList<>();
+					for (String permission : apkInfo.getUsesPermissions()) {
+						AppPermission appPermission = new AppPermission();
+						appPermission.setId(UUID.randomUUID().toString());
+						appPermission.setAppLinkId(appTelecomLink.getId());
+						appPermission.setAppPermissionName(permission);
+						permissionList.add(appPermission);
+					}
+					//批量保存APP权限信息
+					appPermissionService.saveBatchAppPermission(permissionList);
 				}
-				//批量保存APP权限信息
-				appPermissionService.saveBatchAppPermission(permissionList);
 
 			}catch (Exception ex){
 				System.out.println(ex);

@@ -135,6 +135,16 @@ file:
     maxFileSize: 104857600
     ####app 下载保存的路径
     appSavePath: G:\apkdownload\
+    ####是否开启权限入库(1开启，0：关闭）
+    isPermission: 0
+    ####是否开启白名单(1开启，0：关闭）
+    isWhitelist: 0
+    ###是否开启静态分析(1开启，0：关闭）
+    isStatic: 0
+    ####是否开启解析URL(1开启，0：关闭）
+    isParse: 0
+    ####是否开启扫描文件夹(1开启，0：关闭）
+    isSearch: 0
   # 文件大小 /M
   maxSize: 100
   avatarMaxSize: 5
