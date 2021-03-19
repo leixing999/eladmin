@@ -117,12 +117,13 @@ file:
     avatar: C:\eladmin\avatar\
   ####静态解析APK的aapt存放地址
   aapt:
-    path: d:\aapt
+#    path: d:\aapt
+    path: /home/aapt/apktool1/prebuilt/aapt/linux/aapt
   apk:
     ####白名单APK存放地址
-    path: D:\电信劝阻\app
+    path: /home/media
     ####存放电信推送电信诈骗url文件地址
-    urlPath: D:\apk\
+    urlPath: g:\apk\
     ####支持每批次最多几个线程下载
     maxThread: 10
     ####支持下载的最大文件限制
@@ -134,11 +135,21 @@ file:
     ####是否开启白名单(1开启，0：关闭）
     isWhitelist: 0
     ###是否开启静态分析(1开启，0：关闭）
-    isStatic: 1
+    isStatic: 0
     ####是否开启解析URL(1开启，0：关闭）
     isParse: 1
     ####是否开启扫描文件夹(1开启，0：关闭）
     isSearch: 1
+
+    #####url过滤机制
+    filter:
+      ####广告点击数（开始结束）
+      adStart: 0
+      adEnd: 2
+      ####访问数（开始，结束）
+      visitStartNum: 0
+      visitEndNum: 2
+
 
   # 文件大小 /M
   maxSize: 100

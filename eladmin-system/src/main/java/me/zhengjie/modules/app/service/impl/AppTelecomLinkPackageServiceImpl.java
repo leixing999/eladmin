@@ -3,8 +3,14 @@ package me.zhengjie.modules.app.service.impl;
 import me.zhengjie.modules.app.domain.po.AppTelecomLinkPackage;
 import me.zhengjie.modules.app.repository.AppTelecomLinkPackageRepository;
 import me.zhengjie.modules.app.service.AppTelecomLinkPackageService;
+import me.zhengjie.modules.app.service.dto.LinkPackageQueryCriteria;
+import me.zhengjie.modules.system.domain.User;
+import me.zhengjie.utils.PageUtil;
+import me.zhengjie.utils.QueryHelp;
 import me.zhengjie.utils.RequestHolder;
 import me.zhengjie.utils.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
@@ -91,5 +97,15 @@ public class AppTelecomLinkPackageServiceImpl implements AppTelecomLinkPackageSe
 	@Override
 	public List<AppTelecomLinkPackage> findLinkPackageByStatus(Integer status) {
 		return appTelecomLinkPackageRepository.findAppTelecomLinkPackageByLinkPackageStatus(status);
+	}
+
+	@Override
+	public Object findAll(LinkPackageQueryCriteria linkPackageQueryCriteria,Pageable pageable) {
+
+		Page<AppTelecomLinkPackage> page = appTelecomLinkPackageRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, linkPackageQueryCriteria, criteriaBuilder), pageable);
+
+
+
+		return PageUtil.toPage(page);
 	}
 }

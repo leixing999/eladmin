@@ -20,6 +20,11 @@ public class UrlPathVO {
     //文件对应大小
     private long fileSize;
 
+    //广告数量
+    private long adNum;
+    //访问数
+    private long visitNum;
+
     public String getOrignUrlPath() {
         return orignUrlPath;
     }
@@ -76,5 +81,19 @@ public class UrlPathVO {
         this.fileSize = fileSize;
     }
 
+    public long getAdNum() {
+        return adNum;
+    }
 
+    public void setAdNum(long adNum) {
+        this.adNum = adNum;
+    }
+
+    public long getVisitNum() {
+        return visitNum;
+    }
+
+    public void setVisitNum(long visitNum) {
+        this.visitNum = visitNum;
+    }
 }

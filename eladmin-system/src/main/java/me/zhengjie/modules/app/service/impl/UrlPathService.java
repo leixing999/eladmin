@@ -7,6 +7,7 @@ import me.zhengjie.utils.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -25,6 +26,17 @@ public class UrlPathService {
     @Autowired
     AppDictService appDictService;
 
+    //广告点击数（开始结束）过滤条件
+    @Value("${file.apk.filter.adStart}")
+    long adStart;
+    @Value("${file.apk.filter.adEnd}")
+    long adEnd;
+    //访问数（开始，结束）过滤条件
+    @Value("${file.apk.filter.visitStartNum}")
+    long visitStartNum;
+    @Value("${file.apk.filter.visitEndNum}")
+    long visitEndNum;
+
     public List<UrlPathVO>parseApkUrlPath(String apkFilePath){
         List<String> list = FileUtil.getFileRecords(apkFilePath);
         List<UrlPathVO> urlPathVOList = this.parseApkUrlPath(list);
@@ -40,20 +52,32 @@ public class UrlPathService {
         for(String path : urlTextList){
             UrlPathVO pathVO = new UrlPathVO();
             String orignUrlPath = path;
-            String decodeUrlPath = URLDecoderString(ConverPercent.convertPercent(orignUrlPath));
-            boolean isApk = decodeUrlPath.lastIndexOf(".apk")>0 ? true: false;
-            String requestUrlPath = isApk ? getRequestUrlPath(decodeUrlPath) : "";
-            String apkFileName = isApk ? getApkFileName(requestUrlPath) : "";
-            pathVO.setOrignUrlPath(orignUrlPath);
-            pathVO.setDecodeUrlPath(decodeUrlPath);
-            pathVO.setRequestApkUrlPath(requestUrlPath);
-            pathVO.setApk(isApk);
-//            pathVO.setApkFileName(new Random().nextInt(10000)+apkFileName);
-            pathVO.setApkFileName(apkFileName);
+            //解析url进行分割
+            String [] urlSplit = orignUrlPath.split("\\t");
+            if(urlSplit.length==3){
+                String decodeUrlPath = URLDecoderString(ConverPercent.convertPercent(urlSplit[0]));
+                boolean isApk = decodeUrlPath.lastIndexOf(".apk")>0 ? true: false;
+                String requestUrlPath = isApk ? getRequestUrlPath(decodeUrlPath) : "";
+                String apkFileName = isApk ? getApkFileName(requestUrlPath) : "";
+                pathVO.setOrignUrlPath(urlSplit[0]);
+                pathVO.setDecodeUrlPath(decodeUrlPath);
+                pathVO.setRequestApkUrlPath(requestUrlPath);
+                pathVO.setApk(isApk);
+                pathVO.setApkFileName(apkFileName);
 
-            if(appDictService.appDictFilter(0,requestUrlPath).size()==0){
-                urlPathVOList.add(pathVO);
+                pathVO.setAdNum(Long.parseLong(urlSplit[1]));
+                pathVO.setVisitNum(Long.parseLong(urlSplit[2]));
+
+                //判断是否满足过滤条件，不满足添加进去
+                if((pathVO.getVisitNum()>visitStartNum && pathVO.getVisitNum()<=visitEndNum)
+                        &&(pathVO.getAdNum()>adStart && pathVO.getAdNum()<=adEnd)){
+                    if(appDictService.appDictFilter(0,requestUrlPath).size()==0){
+                        urlPathVOList.add(pathVO);
+                    }
+                }
+
             }
+
 
 
         }

@@ -2,7 +2,9 @@ package me.zhengjie.modules.app.repository;
 
 import me.zhengjie.modules.app.domain.po.AppTelecomLink;
 import me.zhengjie.modules.app.domain.po.AppTelecomLinkPackage;
+import me.zhengjie.modules.system.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +19,7 @@ import java.util.List;
  * @author xinglei
  * @date 2021-02-24 18:20:01
  */
-public interface AppTelecomLinkPackageRepository extends JpaRepository<AppTelecomLinkPackage, String> {
+public interface AppTelecomLinkPackageRepository extends JpaRepository<AppTelecomLinkPackage, String>, JpaSpecificationExecutor<AppTelecomLinkPackage> {
     /****
      * 按照文件名找指定电信App解析包是
      * @param linkPackageName

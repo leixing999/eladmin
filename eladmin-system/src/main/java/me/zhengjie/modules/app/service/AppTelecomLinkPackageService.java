@@ -2,6 +2,8 @@ package me.zhengjie.modules.app.service;
 
 import me.zhengjie.modules.app.domain.po.AppTelecomLinkPackage;
 import me.zhengjie.modules.app.repository.AppTelecomLinkPackageRepository;
+import me.zhengjie.modules.app.service.dto.LinkPackageQueryCriteria;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,6 +27,7 @@ public interface AppTelecomLinkPackageService {
      void updateLinkPackage(String id, Date EndTime, Integer currentLines,Integer status);
      List<AppTelecomLinkPackage> findLinkPackageByFileName(String fileName);
      List<AppTelecomLinkPackage> findLinkPackageByStatus(Integer status);
+     Object findAll(LinkPackageQueryCriteria linkPackageQueryCriteria,Pageable pageable);
 
 
 }
