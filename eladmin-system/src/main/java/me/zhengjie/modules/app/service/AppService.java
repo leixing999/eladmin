@@ -20,4 +20,9 @@ public interface AppService {
       * 静态分析APP
       */
      void staticAnalyseApp();
+
+     /****
+      * ftp下载APPurl文件信息
+      */
+     void ftpDownloadAppUrlFiles();
 }

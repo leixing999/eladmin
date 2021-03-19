@@ -30,6 +30,10 @@ public class AppRunner implements ApplicationRunner {
     //是否开启扫描文件夹(1开启，0：关闭）
     @Value("${file.apk.isSearch}")
     int isSearch;
+
+    //是否启用FTP 下载(1开启，0：关闭）
+    @Value("${file.apk.isFtpDownload}")
+    int isFtpDownload;
     @Autowired
     AppService appService;
     @Override
@@ -44,6 +48,27 @@ public class AppRunner implements ApplicationRunner {
                         //是否开启静态分析(1开启，0：关闭）
                         if(isStatic==1){
                             appService.staticAnalyseApp();
+                        }
+
+                        Thread.sleep(100000);
+                    }catch (Exception ex){
+                        System.out.println(ex);
+                    }
+
+                }
+            }
+        }.start();
+
+
+        //启动FTP下载进程
+        new Thread(){
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        //启动FTP下载进程(1开启，0：关闭）
+                        if(isFtpDownload==1){
+                            appService.ftpDownloadAppUrlFiles();
                         }
 
                         Thread.sleep(100000);

@@ -1,5 +1,7 @@
 package me.zhengjie.modules.app.domain.vo;
 
+import java.util.Objects;
+
 /***
  * apk文本文件
  * 每行对应的url 地址信息
@@ -96,4 +98,17 @@ public class UrlPathVO {
     public void setVisitNum(long visitNum) {
         this.visitNum = visitNum;
     }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        UrlPathVO urlPathVO = (UrlPathVO) o;
+//        return Objects.equals(requestApkUrlPath, urlPathVO.requestApkUrlPath);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(requestApkUrlPath);
+//    }
 }

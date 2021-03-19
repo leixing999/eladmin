@@ -5,12 +5,17 @@ import me.zhengjie.modules.app.service.AppDownloadService;
 import me.zhengjie.modules.app.service.AppTelecomLinkService;
 import me.zhengjie.modules.app.service.AppTelecomWhitelistService;
 import me.zhengjie.utils.ApkUtil;
+import me.zhengjie.utils.FTPUtil;
 import me.zhengjie.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.List;
 
 @Service
 public class AppService implements me.zhengjie.modules.app.service.AppService {
@@ -21,6 +26,25 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
     @Value("${file.apk.path}")
     String apkPath;
 
+
+    //FTP下载配置信息
+    @Value("${file.apk.ftp.download.ip}")
+    String downFtpIp;
+    @Value("${file.apk.ftp.download.port}")
+    int downFtpPort;
+    @Value("${file.apk.ftp.download.user}")
+    String downFtpUser;
+    @Value("${file.apk.ftp.download.password}")
+    String downFtpPassword;
+
+    //远程路径
+    @Value("${file.apk.ftp.download.dir}")
+    String dir;
+    //ftp文件下载保存路径
+    @Value("${file.apk.urlPath}")
+    String urlPath;
+
+
     @Autowired
     AppTelecomWhitelistService appTelecomWhitelistService;
     @Autowired
@@ -28,6 +52,7 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
 
     @Autowired
     AppTelecomLinkService appTelecomLinkService;
+
     /****
      *保存电信传递的可疑诈骗APK文件地址信息
      */
@@ -48,19 +73,19 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
     @Override
     public void runAppWhiteList() {
 
-            File[] files = FileUtil.search(apkPath);
-            for(File file : files){
-                try {
-                    ApkInfo apkInfo = new ApkUtil(aaptPath).getApkInfo(file.getPath());
-                    String fileName = file.getName();
-                    appTelecomWhitelistService.runAppWhiteList(apkInfo,fileName);
-                }catch (Exception ex){
-                    System.out.println(ex);
-                }finally {
-                    //删除静态分析入库文件
-                   // file.delete();
-                }
+        File[] files = FileUtil.search(apkPath);
+        for (File file : files) {
+            try {
+                ApkInfo apkInfo = new ApkUtil(aaptPath).getApkInfo(file.getPath());
+                String fileName = file.getName();
+                appTelecomWhitelistService.runAppWhiteList(apkInfo, fileName);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            } finally {
+                //删除静态分析入库文件
+                // file.delete();
             }
+        }
 
     }
 
@@ -70,6 +95,30 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
     @Override
     public void staticAnalyseApp() {
         appTelecomLinkService.staticAnalyseApp();
+    }
+
+    /****
+     * Ftp下载服务
+     */
+    @Override
+    public void ftpDownloadAppUrlFiles() {
+
+
+        long start = System.currentTimeMillis();
+        try {
+            FTPUtil ftp = new FTPUtil(this.downFtpIp, this.downFtpPort, this.downFtpUser, this.downFtpPassword);
+            List<String> fileList = ftp.getFiles(dir);
+
+            for(String fileName : fileList){
+                ftp.downFile(dir,fileName,urlPath);
+            }
+
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println((end - start) / 1000);
     }
 
 }

@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
 
 /****
  * apk url转换服务
@@ -42,6 +44,9 @@ public class UrlPathService {
         List<UrlPathVO> urlPathVOList = this.parseApkUrlPath(list);
         return urlPathVOList;
     }
+
+
+
     /***
      * 解析文本文件原始行信息转换成实际apk文件路径信息
      * @param urlTextList
@@ -71,18 +76,20 @@ public class UrlPathService {
                 //判断是否满足过滤条件，不满足添加进去
                 if((pathVO.getVisitNum()>visitStartNum && pathVO.getVisitNum()<=visitEndNum)
                         &&(pathVO.getAdNum()>adStart && pathVO.getAdNum()<=adEnd)){
+                    //去掉干扰信息过滤
                     if(appDictService.appDictFilter(0,requestUrlPath).size()==0){
                         urlPathVOList.add(pathVO);
                     }
                 }
 
             }
-
-
-
         }
 
-        return urlPathVOList;
+        //去掉重复记录按照apk下载地址
+        return urlPathVOList.stream().collect(
+                collectingAndThen(
+                        toCollection(() -> new TreeSet<>(Comparator.comparing(UrlPathVO::getRequestApkUrlPath))), ArrayList::new)
+        );
     }
 
     /***

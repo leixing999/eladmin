@@ -210,8 +210,11 @@ public class AppDownoadServiceImpl implements AppDownloadService {
      */
     @Override
     public void parseAppUrlFiles(AppTelecomLinkPackage linkPackage) {
+        long start = System.currentTimeMillis();
         //对电信APK文件下载进行归类为对应的URL 路径列表
         List<UrlPathVO> urlPathVOList = urlPathService.parseApkUrlPath(linkPackage.getLinkPackagePath());
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
         //配置每次下载启动10个线程，每个线程下载对应的一个文件
         ExecutorService executor = Executors.newFixedThreadPool(10);
         //获取上次下载的电信APK包文件位置
@@ -232,7 +235,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
                 break;
             }
             //将分页的数据进行去重处理（2）
-            pageList = this.delayRepeatUrlPath(pageList);
+//            pageList = this.delayRepeatUrlPath(pageList);
             //去掉已经下载过得APP(3)
             pageList = this.delayFinishedDownloadUrlPath(pageList);
             //获取多线程下载队列（4)
