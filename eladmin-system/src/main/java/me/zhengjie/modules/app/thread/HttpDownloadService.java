@@ -108,12 +108,13 @@ public class HttpDownloadService {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(10000);
             conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Length","8192");
             conn.setRequestProperty("Range", "bytes=" + startPosition + "-" + endPosition); // 关键方法: 每条线程请求的字节范围
             if (conn.getResponseCode() == HttpURLConnection.HTTP_PARTIAL) { // 关键响应码 ：206，请求成功 + 请求数据字节范围成功
                 RandomAccessFile file = new RandomAccessFile(storagePath, "rwd");
                 file.seek(startPosition); // 关键方法 ：每条线程起始写入文件的位置
                 InputStream in = conn.getInputStream();
-                byte[] buf = new byte[8192];
+                byte[] buf = new byte[8*1024];
                 int len;
                 while ((len = in.read(buf)) > 0) {
                     file.write(buf, 0, len);

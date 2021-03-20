@@ -42,6 +42,14 @@ public class AppDownoadServiceImpl implements AppDownloadService {
     String  appSavePath;
 
 
+    //app 下载保存的路径
+    @Value("${file.apk.isSaveFileFilter}")
+    int  isSaveFileFilter;
+
+    //过滤文件保存路径
+    @Value("${file.apk.filter.filterPath}")
+    String  filterPath;
+
 
     /*****
      * 扫描电信传递的可以诈骗APK下载地址文件
@@ -204,6 +212,20 @@ public class AppDownoadServiceImpl implements AppDownloadService {
     }
 
 
+    private void saveFilterResult(AppTelecomLinkPackage linkPackage,List<UrlPathVO> urlPathVOList){
+        List<String> rstList = new ArrayList<>();
+        for(UrlPathVO urlPathVO : urlPathVOList){
+            rstList.add(urlPathVO.getDecodeUrlPath());
+        }
+        try {
+            FileUtil.writeToFile(rstList,filterPath,new Random().nextInt(10)+linkPackage.getLinkPackageName());
+
+        }catch (Exception ex){
+            System.out.println(ex);
+        }
+
+
+    }
     /****
      * 解析电信传递App Url 文件
      * @param linkPackage
@@ -213,10 +235,15 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         long start = System.currentTimeMillis();
         //对电信APK文件下载进行归类为对应的URL 路径列表
         List<UrlPathVO> urlPathVOList = urlPathService.parseApkUrlPath(linkPackage.getLinkPackagePath());
+        //是否保存过滤文件信息
+        if(isSaveFileFilter==1){
+            this.saveFilterResult(linkPackage,urlPathVOList);
+        }
+
         long end = System.currentTimeMillis();
         System.out.println(end-start);
         //配置每次下载启动10个线程，每个线程下载对应的一个文件
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        ExecutorService executor = Executors.newFixedThreadPool(maxThread);
         //获取上次下载的电信APK包文件位置
         int nextIndex = Integer.parseInt(""+linkPackage.getLinkPackageParseLine());
         //获取一批次下载的URL路径信息

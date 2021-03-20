@@ -420,4 +420,23 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         return fileList;
     }
 
+    /**
+     * 写文件 转 File
+     */
+    public  static void writeToFile(List<String> list, String dir,String name) throws Exception {
+        File file = new File(dir + name);
+        if (file.exists()) {
+            return ;
+        }
+        BufferedWriter os = new BufferedWriter(new FileWriter(file));
+        for(String str : list){
+            os.write(str);
+            os.write("\n");
+        }
+        os.flush();
+        os.close();
+
+
+    }
+
 }
