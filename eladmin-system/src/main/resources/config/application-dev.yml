@@ -187,6 +187,12 @@ appVirtualMachine:
   appiumUrl: http://127.0.0.1:4723/wd/hub
   ####app 模拟器地址
   appVirtualMachineUrl: 192.168.0.101:5555
+####动态分析日志文件
+appDynamic:
+  ####动态分析请求日志文件路径
+  requestPath: E:\request.txt
+  ####动态分析响应日志文件路径
+  responsePath: E:\response.txt
 
   # 文件大小 /M
   maxSize: 100
