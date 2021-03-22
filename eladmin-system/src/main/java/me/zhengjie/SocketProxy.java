@@ -1,11 +1,18 @@
 package me.zhengjie;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
-import java.io.OutputStream;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import me.zhengjie.modules.app.domain.po.AppDynamicResult;
+import me.zhengjie.modules.app.service.AppDynamicAnalyseService;
+import me.zhengjie.modules.app.service.impl.AppDynamicAnalyseServiceImpl;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class HttpProxy extends Thread {
     static public int CONNECT_RETRIES = 5;
@@ -222,9 +229,26 @@ class HttpProxy extends Thread {
 
     // 测试用的简单main方法
     static public void main(String args[]) {
-        System.out.println("在端口808启动代理服务器\n");
-        HttpProxy.log = System.out;
-        HttpProxy.logging = false;
-        HttpProxy.startProxy(8888, HttpProxy.class);
+//        System.out.println("在端口808启动代理服务器\n");
+//        HttpProxy.log = System.out;
+//        HttpProxy.logging = false;
+//        HttpProxy.startProxy(8888, HttpProxy.class);
+
+        try {
+
+
+            AppDynamicAnalyseService appDynamicAnalyseService = new AppDynamicAnalyseServiceImpl();
+
+            AppDynamicResult appDynamicResult = appDynamicAnalyseService.analysisJson("E:\\response.txt");
+
+            System.out.println(appDynamicResult.getAppSensiveSet().size());
+            System.out.println("----------------");
+
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
     }
+
+
+
 }

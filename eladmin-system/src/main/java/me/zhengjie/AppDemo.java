@@ -24,20 +24,28 @@ public class AppDemo {
         DesiredCapabilities cap = new DesiredCapabilities();
         cap.setCapability(CapabilityType.BROWSER_NAME, "");
         cap.setCapability("platformName", "Android"); //指定测试平台
-        cap.setCapability("deviceName", "127.0.0.1:62001"); //指定测试机的ID,通过adb命令`adb devices`获取
+//        cap.setCapability("deviceName", "127.0.0.1:62001"); //指定测试机的ID,通过adb命令`adb devices`获取
 //        cap.setCapability("platformVersion", "7");
+        cap.setCapability("deviceName", "192.168.0.101:5555");
 
 
         //将上面获取到的包名和Activity名设置为值
-        cap.setCapability("appPackage", "com.niwodai.universityloan");
-        cap.setCapability("appActivity", "com.niwodai.loan.lead.WelComeAcV349");
+      //  cap.setCapability("appPackage", "com.niwodai.universityloan");
+    ///    cap.setCapability("appActivity", "com.niwodai.loan.lead.WelComeAcV349");
 
 //        //A new session could not be created的解决方法
 //        cap.setCapability("appWaitActivity", "com.meizu.flyme.calculator.Calculator");
 //        //每次启动时覆盖session，否则第二次后运行会报错不能新建session
 //        cap.setCapability("sessionOverride", true);
+        try {
+            cap.setCapability("app", "D:\\apkdownload\\toutiao_unsigned_signed.apk");
+            driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), cap);
+            driver.installApp("app");
 
-        driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), cap);
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+        System.out.println("------------------");
     }
 
     @Test
@@ -68,14 +76,6 @@ public class AppDemo {
 //        List<WebElement> webList1 = driver.findElements("/");
 //      JsonObject json = driver.getSettings();
 //        Map<String,Object> maps = driver.getAppStringMap();
-        List<WebElement> webList2 =  driver.findElementsByClassName("android.widget.TextView");
-        List<WebElement> webList =  driver.findElementsByClassName("android.widget.Button");
-//        List<WebElement> webList3 =  driver.findElementsByLinkText("我");
-
-
-        for(WebElement web : webList){
-           System.out.println(web.getText());
-       }
 
     }
 
