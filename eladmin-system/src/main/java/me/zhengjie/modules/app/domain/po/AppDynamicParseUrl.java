@@ -28,7 +28,7 @@ public class AppDynamicParseUrl implements Serializable {
 	@Id
 	@ApiModelProperty(value = "自增量主键")
 	@Column(name = "id", nullable = true, length = 20)
-	private Long id;
+	private String id;
 
 	/**
 	 * 外键APP编号

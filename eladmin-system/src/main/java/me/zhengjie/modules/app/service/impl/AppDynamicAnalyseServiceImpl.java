@@ -2,6 +2,7 @@ package me.zhengjie.modules.app.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.RequiredArgsConstructor;
 import me.zhengjie.modules.app.domain.po.AppDynamicResult;
 import me.zhengjie.modules.app.service.AppDynamicAnalyseService;
 
@@ -18,13 +19,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.zhengjie.utils.HtmlUtils;
-import org.htmlparser.Node;
-import org.htmlparser.PrototypicalNodeFactory;
-import org.htmlparser.util.NodeIterator;
-import org.htmlparser.visitors.TextExtractingVisitor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.stereotype.Service;
 
-import org.htmlparser.Parser;
-
+@Service
 public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
 
     /***
@@ -149,7 +147,11 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
             }
         }
     }
-
+    /****
+     * 将json数据转换为结果对象结果集
+     * @param logPath
+     * @return
+     */
     @Override
     public AppDynamicResult analysisJson(String logPath) {
         HashSet hashSet = (HashSet) this.getAppDynamicParseRecord(
@@ -171,5 +173,51 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
         }
 
         return appDynamicResult;
+    }
+
+    /****
+     * 将response数据转换为结果对象结果集
+     * @param logPath
+     * @return
+     */
+    @Override
+    public AppDynamicResult analysisResponse(String logPath) {
+        HashSet hashSet = (HashSet) this.getAppDynamicParseRecord(
+                this.getAppDynamicParseLog(logPath)
+        );
+        Iterator<String> iterator = hashSet.iterator();
+        AppDynamicResult appDynamicResult = new AppDynamicResult();
+        while(iterator.hasNext()){
+            try {
+                String record = iterator.next();
+                appDynamicResult.getAppUrlSet().add(record);
+            }catch (Exception ex){
+                System.out.println(ex);
+            }
+
+        }
+
+        return appDynamicResult;
+    }
+
+    /****
+     * 获取APP动态分析的结果集合
+     * @param responsePath
+     * @param requestPath
+     * @return
+     */
+    @Override
+    public AppDynamicResult getAppDynamicAnalysisResult(String responsePath,String requestPath) {
+
+        AppDynamicResult requestDynamicResult = this.analysisJson(responsePath);
+        AppDynamicResult responseDynamicResult = this.analysisResponse(requestPath);
+
+        Set responseSet = responseDynamicResult.getAppUrlSet();
+        Iterator<String> iterator = responseSet.iterator();
+        while (iterator.hasNext()){
+            requestDynamicResult.getAppUrlSet().add(iterator.next());
+        }
+
+        return requestDynamicResult;
     }
 }

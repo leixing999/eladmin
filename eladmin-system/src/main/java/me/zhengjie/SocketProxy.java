@@ -239,10 +239,11 @@ class HttpProxy extends Thread {
 
             AppDynamicAnalyseService appDynamicAnalyseService = new AppDynamicAnalyseServiceImpl();
 
-            AppDynamicResult appDynamicResult = appDynamicAnalyseService.analysisJson("E:\\response.txt");
-
-            System.out.println(appDynamicResult.getAppSensiveSet().size());
-            System.out.println("----------------");
+//            AppDynamicResult result = appDynamicAnalyseService.analysisResponse("E:\\request.txt");
+           AppDynamicResult appDynamicResult = appDynamicAnalyseService.getAppDynamicAnalysisResult("E:\\response.txt","E:\\request.txt");
+//
+          System.out.println(appDynamicResult.getAppSensiveSet().size());
+//            System.out.println("----------------");
 
         }catch(Exception ex){
             System.out.println(ex);

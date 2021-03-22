@@ -34,4 +34,19 @@ public interface AppDynamicAnalyseService {
      */
     AppDynamicResult analysisJson(String logPath);
 
+    /****
+     * 将response数据转换为结果对象结果集
+     * @param logPath
+     * @return
+     */
+    AppDynamicResult analysisResponse(String logPath);
+
+    /****
+     * 获取APP动态分析的结果集合
+     * @param responsePath
+     * @param requestPath
+     * @return
+     */
+    AppDynamicResult getAppDynamicAnalysisResult(String responsePath,String requestPath);
+
 }

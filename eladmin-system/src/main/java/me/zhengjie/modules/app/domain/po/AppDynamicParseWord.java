@@ -28,7 +28,7 @@ public class AppDynamicParseWord implements Serializable {
 	@Id
 	@ApiModelProperty(value = "主键")
 	@Column(name = "id", nullable = true, length = 20)
-	private Long id;
+	private String id;
 
 	/**
 	 * app 主键编号

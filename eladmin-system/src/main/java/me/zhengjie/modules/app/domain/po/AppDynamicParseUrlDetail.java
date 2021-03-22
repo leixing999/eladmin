@@ -26,6 +26,7 @@ public class AppDynamicParseUrlDetail implements Serializable {
 	 * default  : null
 	 */
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@ApiModelProperty(value = "主键")
 	@Column(name = "id", nullable = true, length = 20)
 	private Long id;

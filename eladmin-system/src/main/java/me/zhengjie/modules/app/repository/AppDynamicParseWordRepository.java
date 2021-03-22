@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author xinglei
  * @date 2021-03-22 13:39:22
  */
-public interface AppDynamicParseWordRepository extends JpaRepository<AppDynamicParseWord, Long> {
+public interface AppDynamicParseWordRepository extends JpaRepository<AppDynamicParseWord, String> {
 
 }
