@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import me.zhengjie.modules.app.domain.po.AppDynamicResult;
 import me.zhengjie.modules.app.service.AppDynamicAnalyseService;
+import me.zhengjie.modules.app.service.AppDynamicService;
 import me.zhengjie.modules.app.service.impl.AppDynamicAnalyseServiceImpl;
+import me.zhengjie.modules.app.service.impl.AppDynamicServiceImpl;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -229,25 +231,14 @@ class HttpProxy extends Thread {
 
     // 测试用的简单main方法
     static public void main(String args[]) {
-//        System.out.println("在端口808启动代理服务器\n");
-//        HttpProxy.log = System.out;
-//        HttpProxy.logging = false;
-//        HttpProxy.startProxy(8888, HttpProxy.class);
+    //        System.out.println("在端口808启动代理服务器\n");
+    //        HttpProxy.log = System.out;
+    //        HttpProxy.logging = false;
+    //        HttpProxy.startProxy(8888, HttpProxy.class);
+        AppDynamicService appDynamicService = new AppDynamicServiceImpl();
+      //  appDynamicService.installApp("D:\\apkdownload\\toutiao_unsigned_signed.apk","http://127.0.0.1:4723/wd/hub","192.168.0.101:5555");
+        appDynamicService.uninstallApp("com.wbiao.wbapp","http://127.0.0.1:4723/wd/hub","192.168.0.101:5555");
 
-        try {
-
-
-            AppDynamicAnalyseService appDynamicAnalyseService = new AppDynamicAnalyseServiceImpl();
-
-//            AppDynamicResult result = appDynamicAnalyseService.analysisResponse("E:\\request.txt");
-           AppDynamicResult appDynamicResult = appDynamicAnalyseService.getAppDynamicAnalysisResult("E:\\response.txt","E:\\request.txt");
-//
-          System.out.println(appDynamicResult.getAppSensiveSet().size());
-//            System.out.println("----------------");
-
-        }catch(Exception ex){
-            System.out.println(ex);
-        }
     }
 
 

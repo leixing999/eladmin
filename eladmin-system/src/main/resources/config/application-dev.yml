@@ -181,8 +181,12 @@ file:
         password: shxp
         ###请求路径
         dir: /apk/
-
-
+#####虚拟机配置环境
+appVirtualMachine:
+  ####appium请求网关地址
+  appiumUrl: http://127.0.0.1:4723/wd/hub
+  ####app 模拟器地址
+  appVirtualMachineUrl: 192.168.0.101:5555
 
   # 文件大小 /M
   maxSize: 100
