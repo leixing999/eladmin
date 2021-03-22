@@ -174,4 +174,13 @@ public class AppTelecomLink implements Serializable {
 	@Column(name = "app_update_time", nullable = true)
 	private java.util.Date appUpdateTime;
 
+	/**
+	 * app更新时间
+	 * nullable : true
+	 * default  : null
+	 */
+	@ApiModelProperty(value = "0:待动态分析，1：分析完成，-1：分析异常")
+	@Column(name = "app_is_dynamic", nullable = true)
+	private Integer appIsDynamic;
+
 }

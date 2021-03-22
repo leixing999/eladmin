@@ -64,6 +64,15 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 	public void updateAppTelecomLink(AppTelecomLink appTelecomLink) {
 		appTelecomLinkRepository.updateAppTelecomLink(appTelecomLink);
 	}
+	/***
+	 * 通过对app进行动态分析对此App的参数信息进行跟新
+	 * @param id
+	 * @param isDynamic
+	 */
+	@Override
+	public void updateAppTelecomLink(String id, Integer isDynamic) {
+		appTelecomLinkRepository.updateAppTelecomLink(id,isDynamic);
+	}
 
 	@Override
 	public List<AppTelecomLink> findAppLinkByAppName(String fileName) {
@@ -79,6 +88,17 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 	@Override
 	public List<AppTelecomLink> findAppLinkByConditions(int isAnalyse, int isDown) {
 		return appTelecomLinkRepository.findAppTelecomLinkByAppIsAnalyseAndAppIsDown(isAnalyse,isDown);
+	}
+	/****
+	 * 通过isDynamic和isdown组合条件查找
+	 * 已下载但是为东态分析的app
+	 * @param isDynamic
+	 * @param isDown
+	 * @return
+	 */
+	@Override
+	public List<AppTelecomLink> findAppLinkByDynamicConditions(int isDown, int isDynamic) {
+		return appTelecomLinkRepository.findAppTelecomLinkByAppIsDownAndAppIsDynamic(isDown,isDynamic);
 	}
 
 	/****

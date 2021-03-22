@@ -28,6 +28,12 @@ public interface AppTelecomLinkService {
     void updateAppTelecomLink(AppTelecomLink appTelecomLink);
 
     /***
+     * 通过对app进行动态分析对此App的参数信息进行跟新
+     * @param id
+     * @param isDynamic
+     */
+    void updateAppTelecomLink(String id,Integer isDynamic);
+    /***
      * 按照名字查找电信APP信息
      * @param fileName
      * @return
@@ -42,6 +48,15 @@ public interface AppTelecomLinkService {
      * @return
      */
     List<AppTelecomLink> findAppLinkByConditions(int isAnalyse,int isDown);
+
+    /****
+     * 通过isDynamic和isdown组合条件查找
+     * 已下载但是为东态分析的app
+     * @param isDynamic
+     * @param isDown
+     * @return
+     */
+    List<AppTelecomLink> findAppLinkByDynamicConditions(int isDown,int isDynamic);
 
     /****
      * 静态分析APP

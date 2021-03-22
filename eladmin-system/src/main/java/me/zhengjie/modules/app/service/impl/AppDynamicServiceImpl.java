@@ -2,13 +2,22 @@ package me.zhengjie.modules.app.service.impl;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import me.zhengjie.modules.app.domain.po.AppTelecomLink;
 import me.zhengjie.modules.app.service.AppDynamicService;
+import me.zhengjie.modules.app.service.AppTelecomLinkService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.net.URL;
+import java.util.List;
 
+@Service
 public class AppDynamicServiceImpl implements AppDynamicService {
+
+    @Autowired
+    AppTelecomLinkService appTelecomLinkService;
 
     /****
      * 远程安装app
@@ -57,5 +66,14 @@ public class AppDynamicServiceImpl implements AppDynamicService {
         }catch(Exception ex){
             System.out.println(ex);
         }
+    }
+
+    /****
+     * 动态解析app
+     */
+    @Override
+    public void dynamicApp() {
+
+        List<AppTelecomLink> list = appTelecomLinkService.findAppLinkByDynamicConditions(1,0);
     }
 }

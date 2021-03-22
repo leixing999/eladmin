@@ -236,8 +236,8 @@ class HttpProxy extends Thread {
     //        HttpProxy.logging = false;
     //        HttpProxy.startProxy(8888, HttpProxy.class);
         AppDynamicService appDynamicService = new AppDynamicServiceImpl();
-      //  appDynamicService.installApp("D:\\apkdownload\\toutiao_unsigned_signed.apk","http://127.0.0.1:4723/wd/hub","192.168.0.101:5555");
-        appDynamicService.uninstallApp("com.wbiao.wbapp","http://127.0.0.1:4723/wd/hub","192.168.0.101:5555");
+        appDynamicService.installApp("D:\\apkdownload\\toutiao_unsigned_signed.apk","http://127.0.0.1:4723/wd/hub","192.168.0.101:5555");
+//        appDynamicService.uninstallApp("com.wbiao.wbapp","http://127.0.0.1:4723/wd/hub","192.168.0.101:5555");
 
     }
 

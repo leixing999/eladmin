@@ -32,6 +32,14 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
      */
     List<AppTelecomLink> findAppTelecomLinkByAppIsAnalyseAndAppIsDown(int isAnalyse,int isDown);
 
+    /***
+     * 搜索没有动态分析的APP
+     * @param isDown
+     * @param isDynamic
+     * @return
+     */
+    List<AppTelecomLink> findAppTelecomLinkByAppIsDownAndAppIsDynamic(int isDown,int isDynamic);
+
     /****
      * 通过对app进行静态分析对此App的参数信息进行跟新
      * @param appTelecomLink
@@ -65,5 +73,20 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
             " app_type=:#{#appTelecomLink.appType} " +
             " where  id=:#{#appTelecomLink.id}",nativeQuery = true)
     void updateAppLink(@Param("appTelecomLink") AppTelecomLink appTelecomLink);
+
+
+    /****
+     * 通过对app进行动态分析对此App的参数信息进行跟新
+     * @param id
+     * @param isDynamic
+     */
+    @Modifying
+    @Transactional
+    @Query(value=" update app_telecom_link " +
+            " set " +
+            " app_is_dynamic=?2 " +
+            " where  id=?1",nativeQuery = true)
+    void updateAppTelecomLink(String id,Integer isDynamic);
+
 
 }

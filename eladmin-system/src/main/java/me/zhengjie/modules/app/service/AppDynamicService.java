@@ -16,4 +16,9 @@ public interface AppDynamicService {
      * @param virtualMachineUrl 模拟器地址
      */
     void uninstallApp(String packageName,String appiumUrl,String virtualMachineUrl);
+
+    /****
+     * 动态解析app
+     */
+    void dynamicApp();
 }
