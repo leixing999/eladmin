@@ -118,7 +118,7 @@ file:
   ####静态解析APK的aapt存放地址
   aapt:
 #    path: d:\aapt
-    path: /home/aapt/apktool1/prebuilt/aapt/linux/aapt
+    path: E:\aapt
   apk:
     ####白名单APK存放地址
     path: /home/media
@@ -135,7 +135,7 @@ file:
     ####是否开启白名单(1开启，0：关闭）
     isWhitelist: 0
     ###是否开启静态分析(1开启，0：关闭）
-    isStatic: 0
+    isStatic: 1
     ####是否开启解析URL(1开启，0：关闭）
     isParse: 0
     ####是否开启扫描文件夹(1开启，0：关闭）
@@ -157,18 +157,18 @@ file:
       filterPath: g:\apk\filter\
     ####增加FTP配置信息
     ftp:
-      #####上传配置信息
-      upload:
+      #####虚拟机下载FTP配置信息
+      virtualMachineDownload:
         ###IP
         ip: 127.0.0.1
         ###端口
         port: 21
         ###用户名
-        user: xinglei
+        user: shxp
         ###密码
-        password: xinglei
+        password: shxp
         ###请求路径
-        dir: /
+        dir: /log
       ####下载配置信息
       download:
         ###IP
@@ -190,9 +190,11 @@ appVirtualMachine:
 ####动态分析日志文件
 appDynamic:
   ####动态分析请求日志文件路径
-  requestPath: E:\request.txt
+  requestPath: E:\apklog\request.txt
   ####动态分析响应日志文件路径
-  responsePath: E:\response.txt
+  responsePath: E:\apklog\response.txt
+  #####动态分析下载目录
+  apkDynamicLogPath: E:\apklog\
 
   # 文件大小 /M
   maxSize: 100

@@ -2,6 +2,7 @@ package me.zhengjie.modules.app.service.impl;
 
 import me.zhengjie.domain.ApkInfo;
 import me.zhengjie.modules.app.service.AppDownloadService;
+import me.zhengjie.modules.app.service.AppDynamicService;
 import me.zhengjie.modules.app.service.AppTelecomLinkService;
 import me.zhengjie.modules.app.service.AppTelecomWhitelistService;
 import me.zhengjie.utils.ApkUtil;
@@ -45,6 +46,13 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
     String urlPath;
 
 
+    //appium请求网关地址
+    @Value("${appVirtualMachine.appiumUrl}")
+    String appiumUrl;
+    //app 模拟器地址
+    @Value("${appVirtualMachine.appVirtualMachineUrl}")
+    String appVirtualMachineUrl;
+
     @Autowired
     AppTelecomWhitelistService appTelecomWhitelistService;
     @Autowired
@@ -52,6 +60,10 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
 
     @Autowired
     AppTelecomLinkService appTelecomLinkService;
+
+
+    @Autowired
+    AppDynamicService appDynamicService;
 
     /****
      *保存电信传递的可疑诈骗APK文件地址信息
@@ -95,6 +107,13 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
     @Override
     public void staticAnalyseApp() {
         appTelecomLinkService.staticAnalyseApp();
+    }
+    /***
+     * 动态分析App信息
+     */
+    @Override
+    public void dynamicAnalyseApp() {
+        appDynamicService.dynamicApp(appiumUrl,appVirtualMachineUrl);
     }
 
     /****

@@ -7,6 +7,7 @@ import me.zhengjie.modules.app.service.AppDynamicAnalyseService;
 import me.zhengjie.modules.app.service.AppDynamicParseUrlService;
 import me.zhengjie.modules.app.service.AppDynamicService;
 import me.zhengjie.modules.app.service.AppTelecomLinkService;
+import me.zhengjie.utils.FTPUtil;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,60 @@ public class AppDynamicServiceImpl implements AppDynamicService {
     String responsePath;
 
 
+    //FTP下载配置信息
+    @Value("${file.apk.ftp.virtualMachineDownload.ip}")
+    String downFtpIp;
+    @Value("${file.apk.ftp.virtualMachineDownload.port}")
+    int downFtpPort;
+    @Value("${file.apk.ftp.virtualMachineDownload.user}")
+    String downFtpUser;
+    @Value("${file.apk.ftp.virtualMachineDownload.password}")
+    String downFtpPassword;
+
+    //远程路径
+    @Value("${file.apk.ftp.virtualMachineDownload.dir}")
+    String dir;
+    //ftp文件下载保存路径
+    @Value("${appDynamic.apkDynamicLogPath}")
+    String apkDynamicLogPath;
+
+
+    //apk保存的路径
+    @Value("${file.apk.appSavePath}")
+    String appSavePath;
+    /****
+     * 删除远程服务的apk动态生成的日志文件
+     */
+    private void deleteRemoteApkDynamicLog(){
+        try{
+            FTPUtil ftp = new FTPUtil(this.downFtpIp, this.downFtpPort, this.downFtpUser, this.downFtpPassword);
+            ftp.deleteFile(dir,requestPath.substring(requestPath.lastIndexOf("\\")));
+            ftp.deleteFile(dir,responsePath.substring(responsePath.lastIndexOf("\\")));
+        }catch (Exception ex){
+            System.out.println(ex);
+        }
+    }
+
+    /***
+     * 下载apk动态生成的日志文件
+     */
+    private void downloadRemoteApkDynamicLog(){
+        long start = System.currentTimeMillis();
+        try {
+            FTPUtil ftp = new FTPUtil(this.downFtpIp, this.downFtpPort, this.downFtpUser, this.downFtpPassword);
+            List<String> fileList = ftp.getFiles(dir);
+            for(String fileName : fileList){
+                ftp.downFile(dir,fileName,apkDynamicLogPath);
+            }
+
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println((end - start) / 1000);
+    }
+
     /****
      * 远程安装app
      * @param appPath
@@ -46,7 +101,7 @@ public class AppDynamicServiceImpl implements AppDynamicService {
         cap.setCapability("deviceName", virtualMachineUrl);
 
         try {
-            cap.setCapability("app", appPath);
+            cap.setCapability("app", appSavePath+appPath);
             driver = new AndroidDriver(new URL(appiumUrl), cap);
             driver.installApp("app");
             driver.quit();
@@ -95,9 +150,11 @@ public class AppDynamicServiceImpl implements AppDynamicService {
                 int isDynamic = 1;
                 try {
                     //清空动态解析APP日志文件（1）
+                    this.deleteRemoteApkDynamicLog();
                     //安装APP（2）
                     this.installApp(appLink.getAppFileName(), appiumUrl, virtualMachineUrl);
                     //获取动态解析APP日志文件(3)
+                    this.downloadRemoteApkDynamicLog();
                     //动态解析APP（4）
                     appDynamicParseUrlService.saveAppDynamicAnylasisResult(responsePath,requestPath,appLink.getId());
                     //卸载APP(5)

@@ -98,6 +98,7 @@ public class AppRunner implements ApplicationRunner {
                     appService.runAppWhiteList();
                 }
 
+                appService.dynamicAnalyseApp();
                 //appService.staticAnalyseApp();
 
                 Thread.sleep(10000);

@@ -21,6 +21,11 @@ public interface AppService {
       */
      void staticAnalyseApp();
 
+     /***
+      * 动态分析App信息
+      */
+     void dynamicAnalyseApp();
+
      /****
       * ftp下载APPurl文件信息
       */
