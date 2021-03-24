@@ -93,6 +93,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
             linkPackage.setLinkPackageLines(0l);
             linkPackage.setIp("");
             linkPackage.setLinkPackageParseLine(0l);
+
             linkPackage.setId(HashUtil.uuid(file.getName()));
             //将电信传递的可疑诈骗文件信息入库
             appTelecomLinkPackageService.saveAppTelecomLinkPackage(linkPackage);
@@ -202,6 +203,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
                 if(appTelecomLink!=null){
                     appTelecomLink.setAppIsAnalyse(0);
                     appTelecomLink.setAppType(0);
+                    appTelecomLink.setAppIsDynamic(0);
                     appTelecomLinkService.saveAppTelecomLink(appTelecomLink);
                 }
 

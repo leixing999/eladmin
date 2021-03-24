@@ -59,8 +59,8 @@ public class AppDynamicServiceImpl implements AppDynamicService {
     private void deleteRemoteApkDynamicLog(){
         try{
             FTPUtil ftp = new FTPUtil(this.downFtpIp, this.downFtpPort, this.downFtpUser, this.downFtpPassword);
-            ftp.deleteFile(dir,requestPath.substring(requestPath.lastIndexOf("\\")));
-            ftp.deleteFile(dir,responsePath.substring(responsePath.lastIndexOf("\\")));
+            ftp.deleteFile(dir,requestPath.substring(requestPath.lastIndexOf("\\")+1));
+            ftp.deleteFile(dir,responsePath.substring(responsePath.lastIndexOf("\\")+1));
         }catch (Exception ex){
             System.out.println(ex);
         }
@@ -153,6 +153,7 @@ public class AppDynamicServiceImpl implements AppDynamicService {
                     this.deleteRemoteApkDynamicLog();
                     //安装APP（2）
                     this.installApp(appLink.getAppFileName(), appiumUrl, virtualMachineUrl);
+                    Thread.sleep(30000);
                     //获取动态解析APP日志文件(3)
                     this.downloadRemoteApkDynamicLog();
                     //动态解析APP（4）

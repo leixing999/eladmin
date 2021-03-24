@@ -84,17 +84,21 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 			appWordList.add(appDynamicParseWord);
 		}
 		//批量保存APP请求的URL
-		try{
-			appDynamicParseUrlRepository.saveAll(appUrlList);
-		}catch (Exception ex){
-			System.out.println("保存APP请求的URL"+ex);
-		}
+		for(AppDynamicParseUrl appDynamicParseUrl : appUrlList){
+			try{
 
+				appDynamicParseUrlRepository.save(appDynamicParseUrl);
+			}catch (Exception ex){
+				System.out.println("保存APP请求的URL"+ex);
+			}
+		}
 		//批量保存APP动态解析敏感词
-		try{
-			appDynamicParseWordRepository.saveAll(appWordList);
-		}catch (Exception ex){
-			System.out.println("保存APP请求的敏感词"+ex);
+		for(AppDynamicParseWord appDynamicParseWord : appWordList) {
+			try {
+				appDynamicParseWordRepository.save(appDynamicParseWord);
+			} catch (Exception ex) {
+				System.out.println("保存APP请求的敏感词" + ex);
+			}
 		}
 
 	}

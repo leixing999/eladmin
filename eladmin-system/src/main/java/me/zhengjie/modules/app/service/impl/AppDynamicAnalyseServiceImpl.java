@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -121,6 +123,8 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
                                 //获取图像地址集合
                                 if (objectStr.indexOf(".jpg") > 0 || objectStr.indexOf(".png") > 0 || objectStr.indexOf(".gif") > 0) {
                                     appDynamicResult.getAppUrlByImageSet().add(objectStr);
+                                    String url = this.getDomain(objectStr);
+                                    appDynamicResult.getAppUrlSet().add(url);
                                     continue;
                                 }
 
@@ -128,7 +132,8 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
                                 if (objectStr.indexOf(".html") > 0) {
                                     appDynamicResult.getAppUrlByHtmlSet().add(objectStr);
                                 } else {
-                                    appDynamicResult.getAppUrlSet().add(objectStr);
+                                    String url = this.getDomain(objectStr);
+                                    appDynamicResult.getAppUrlSet().add(url);
                                 }
                                 continue;
                             }
@@ -137,7 +142,7 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
                             objectStr = HtmlUtils.html2Str(object.toString()).trim();
                             //获取敏感词
                             if (Pattern.matches(patternZw, objectStr)) {
-                                appDynamicResult.getAppSensiveSet().add(objectStr);
+                                appDynamicResult.getAppSensiveSet().add(objectStr.trim());
                             }
 
                         }
@@ -146,6 +151,25 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
                 }
             }
         }
+    }
+
+    private  String getDomain(String curl){
+        URL url = null;
+
+        String q = "";
+
+        try {
+            url = new URL(curl);
+
+            q = url.getHost();
+
+        } catch (MalformedURLException e) {
+        }
+
+        url = null;
+
+        return q;
+
     }
     /****
      * 将json数据转换为结果对象结果集
@@ -162,10 +186,11 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
         AppDynamicResult appDynamicResult = new AppDynamicResult();
         while(iterator.hasNext()){
             try {
-                String record = iterator.next();
+                String record = iterator.next().trim();
 
                 JSONObject objJson = JSONObject.parseObject(record);
                 this.analysisJson(objJson,appDynamicResult);
+
             }catch (Exception ex){
                 System.out.println(ex);
             }
@@ -189,7 +214,7 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
         AppDynamicResult appDynamicResult = new AppDynamicResult();
         while(iterator.hasNext()){
             try {
-                String record = iterator.next();
+                String record = iterator.next().trim();
                 appDynamicResult.getAppUrlSet().add(record);
             }catch (Exception ex){
                 System.out.println(ex);
@@ -215,7 +240,7 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
         Set responseSet = responseDynamicResult.getAppUrlSet();
         Iterator<String> iterator = responseSet.iterator();
         while (iterator.hasNext()){
-            requestDynamicResult.getAppUrlSet().add(iterator.next());
+            requestDynamicResult.getAppUrlSet().add(iterator.next().trim());
         }
 
         return requestDynamicResult;
