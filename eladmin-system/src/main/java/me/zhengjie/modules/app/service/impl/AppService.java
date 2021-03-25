@@ -1,10 +1,7 @@
 package me.zhengjie.modules.app.service.impl;
 
 import me.zhengjie.domain.ApkInfo;
-import me.zhengjie.modules.app.service.AppDownloadService;
-import me.zhengjie.modules.app.service.AppDynamicService;
-import me.zhengjie.modules.app.service.AppTelecomLinkService;
-import me.zhengjie.modules.app.service.AppTelecomWhitelistService;
+import me.zhengjie.modules.app.service.*;
 import me.zhengjie.utils.ApkUtil;
 import me.zhengjie.utils.FTPUtil;
 import me.zhengjie.utils.FileUtil;
@@ -65,6 +62,9 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
     @Autowired
     AppDynamicService appDynamicService;
 
+    @Autowired
+    AppDumpAnalyseService appDumpAnalyseService;
+
     /****
      *保存电信传递的可疑诈骗APK文件地址信息
      */
@@ -114,6 +114,11 @@ public class AppService implements me.zhengjie.modules.app.service.AppService {
     @Override
     public void dynamicAnalyseApp() {
         appDynamicService.dynamicApp(appiumUrl,appVirtualMachineUrl);
+    }
+
+    @Override
+    public void dumpAnalyseApp() {
+        appDumpAnalyseService.apkDumpAnalyse();
     }
 
     /****

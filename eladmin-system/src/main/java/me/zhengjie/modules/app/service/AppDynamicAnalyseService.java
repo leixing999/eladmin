@@ -2,6 +2,7 @@ package me.zhengjie.modules.app.service;
 
 import me.zhengjie.modules.app.domain.po.AppDynamicResult;
 
+import java.io.BufferedReader;
 import java.util.Set;
 
 public interface AppDynamicAnalyseService {
@@ -21,6 +22,14 @@ public interface AppDynamicAnalyseService {
     StringBuffer getAppDynamicParseLog(String logPath);
 
     /****
+     * 按照动态解析将日志文件内容读取到字符串缓冲区里
+     * @param logPath
+     * @param charset
+     * @return
+     */
+    StringBuffer getAppDynamicParseLog(String logPath,String charset);
+
+    /****
      * 将json数据转换为结果对象结果集
      * @param objJson
      * @param appDynamicResult
@@ -33,6 +42,20 @@ public interface AppDynamicAnalyseService {
      * @return
      */
     AppDynamicResult analysisJson(String logPath);
+
+    /****
+     * 将json数据转换为结果对象结果集
+     * @param buffer
+     * @return
+     */
+    AppDynamicResult analysisJson(StringBuffer buffer);
+
+    /****
+     * 将Xml数据转换为结果对象结果集
+     * @param buffer
+     * @return
+     */
+    AppDynamicResult analysisXml(StringBuffer buffer);
 
     /****
      * 将response数据转换为结果对象结果集

@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import me.zhengjie.utils.HtmlUtils;
 
+import me.zhengjie.utils.ParseXML;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -59,6 +60,32 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
         InputStreamReader reader = null;
         try {
             reader = new InputStreamReader(new FileInputStream(new File(logPath)), StandardCharsets.UTF_16LE);
+            BufferedReader br = new BufferedReader(reader);
+            String line = "";
+
+            while ((line = br.readLine()) != null) {
+                buffer.append(line);
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        } finally {
+            try {
+                reader.close();
+                reader = null;
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
+        return buffer;
+    }
+
+    @Override
+    public StringBuffer getAppDynamicParseLog(String logPath, String charset) {
+        StringBuffer buffer = new StringBuffer();
+        InputStreamReader reader = null;
+        try {
+            reader = new InputStreamReader(new FileInputStream(new File(logPath)), charset);
             BufferedReader br = new BufferedReader(reader);
             String line = "";
 
@@ -121,8 +148,8 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
                             //获取动态Url
                             if (Pattern.matches(patternWebSites, objectStr)) {
                                 //获取图像地址集合
-                                if (objectStr.indexOf(".jpg") > 0 || objectStr.indexOf(".png") > 0 || objectStr.indexOf(".gif") > 0) {
-                                    appDynamicResult.getAppUrlByImageSet().add(objectStr);
+                                /*if (objectStr.indexOf(".jpg") > 0 || objectStr.indexOf(".png") > 0 || objectStr.indexOf(".gif") > 0) {
+                                   /// appDynamicResult.getAppUrlByImageSet().add(objectStr);
                                     String url = this.getDomain(objectStr);
                                     appDynamicResult.getAppUrlSet().add(url);
                                     continue;
@@ -130,11 +157,17 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
 
                                 //获取HTML地址集合
                                 if (objectStr.indexOf(".html") > 0) {
-                                    appDynamicResult.getAppUrlByHtmlSet().add(objectStr);
+                                   // appDynamicResult.getAppUrlByHtmlSet().add(objectStr);
+                                    String url = this.getDomain(objectStr);
+                                    appDynamicResult.getAppUrlSet().add(url);
                                 } else {
                                     String url = this.getDomain(objectStr);
                                     appDynamicResult.getAppUrlSet().add(url);
-                                }
+                                }*/
+                                String url = this.getDomain(objectStr);
+                                if (url != null && url.length() > 0)
+                                    appDynamicResult.getAppUrlSet().add(url);
+
                                 continue;
                             }
 
@@ -153,7 +186,7 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
         }
     }
 
-    private  String getDomain(String curl){
+    private String getDomain(String curl) {
         URL url = null;
 
         String q = "";
@@ -171,6 +204,7 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
         return q;
 
     }
+
     /****
      * 将json数据转换为结果对象结果集
      * @param logPath
@@ -184,18 +218,84 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
 
         Iterator<String> iterator = hashSet.iterator();
         AppDynamicResult appDynamicResult = new AppDynamicResult();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             try {
                 String record = iterator.next().trim();
 
                 JSONObject objJson = JSONObject.parseObject(record);
-                this.analysisJson(objJson,appDynamicResult);
+                this.analysisJson(objJson, appDynamicResult);
 
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 System.out.println(ex);
             }
 
         }
+
+        return appDynamicResult;
+    }
+
+    /***
+     * 将json转换成结果集合的重载方法
+     * @param buffer
+     * @return
+     */
+    @Override
+    public AppDynamicResult analysisJson(StringBuffer buffer) {
+        AppDynamicResult appDynamicResult = new AppDynamicResult();
+        try {
+            String record = buffer.toString();
+
+            JSONObject objJson = JSONObject.parseObject(record);
+            this.analysisJson(objJson, appDynamicResult);
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+
+        return appDynamicResult;
+    }
+
+    /****
+     * 对xml解析为set集合
+     * @param buffer
+     * @return
+     */
+    @Override
+    public AppDynamicResult analysisXml(StringBuffer buffer) {
+        //实例化对象
+        ParseXML parseXML = new ParseXML();
+        //获取xml
+        String xml = new String();
+        AppDynamicResult appDynamicResult = new AppDynamicResult();
+        try {
+            //解析xml
+            Set<String> set = parseXML.parserXml(buffer.toString());
+            Iterator<String> iterator = set.iterator();
+
+            while (iterator.hasNext()) {
+
+                String patternZw = ".*[\u4e00-\u9fa5].*";
+                String patternWebSites = "(http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?";
+                String objectStr = iterator.next();
+                //获取动态Url
+                if (Pattern.matches(patternWebSites, objectStr)) {
+                    String url = this.getDomain(objectStr);
+                    if (url != null && url.length() > 0) {
+                        appDynamicResult.getAppUrlSet().add(url);
+                        continue;
+                    }
+                }
+                //获取敏感词
+                if (Pattern.matches(patternZw, objectStr)) {
+                    appDynamicResult.getAppSensiveSet().add(objectStr.trim());
+                }
+            }
+
+        } catch (Exception e) {
+            //
+            System.err.print(e.getMessage());
+        }
+
 
         return appDynamicResult;
     }
@@ -212,11 +312,11 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
         );
         Iterator<String> iterator = hashSet.iterator();
         AppDynamicResult appDynamicResult = new AppDynamicResult();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             try {
                 String record = iterator.next().trim();
                 appDynamicResult.getAppUrlSet().add(record);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 System.out.println(ex);
             }
 
@@ -232,14 +332,14 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
      * @return
      */
     @Override
-    public AppDynamicResult getAppDynamicAnalysisResult(String responsePath,String requestPath) {
+    public AppDynamicResult getAppDynamicAnalysisResult(String responsePath, String requestPath) {
 
         AppDynamicResult requestDynamicResult = this.analysisJson(responsePath);
         AppDynamicResult responseDynamicResult = this.analysisResponse(requestPath);
 
         Set responseSet = responseDynamicResult.getAppUrlSet();
         Iterator<String> iterator = responseSet.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             requestDynamicResult.getAppUrlSet().add(iterator.next().trim());
         }
 

@@ -117,7 +117,7 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 				appTelecomLink.setAppApplicationName(apkInfo.getApplicationLable());
 				appTelecomLink.setAppClassName(apkInfo.getLaunchableActivity());
 				appTelecomLink.setAppPackageName(apkInfo.getPackageName());
-				appTelecomLink.setAppVersion(apkInfo.getVersionName());
+				appTelecomLink.setAppVersion("");
 				appTelecomLink.setAppType(2);
 				//判断APP是否在白名单里
 				if(appTelecomWhitelistRepository.findByAppApplicationNameAndAndAppClassNameAndAndAppPackageName(

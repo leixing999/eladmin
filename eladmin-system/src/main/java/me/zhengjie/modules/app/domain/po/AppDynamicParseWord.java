@@ -47,4 +47,14 @@ public class AppDynamicParseWord implements Serializable {
 	@ApiModelProperty(value = "内容")
 	@Column(name = "content", nullable = true)
 	private String content;
+
+	/**
+	 * 来源渠道
+	 * nullable : true
+	 * default  : null
+	 */
+	@ApiModelProperty(value = "渠道0:动态分析，1：静态分析")
+	@Column(name = "channel", nullable = true)
+	private Integer channel;
+
 }

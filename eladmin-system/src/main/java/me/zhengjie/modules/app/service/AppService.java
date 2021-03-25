@@ -26,6 +26,11 @@ public interface AppService {
       */
      void dynamicAnalyseApp();
 
+     /***
+      * APP脱壳分析
+      */
+     void dumpAnalyseApp();
+
      /****
       * ftp下载APPurl文件信息
       */

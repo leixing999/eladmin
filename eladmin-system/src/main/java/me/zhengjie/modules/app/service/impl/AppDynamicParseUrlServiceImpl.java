@@ -35,9 +35,10 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 	/***
 	 * 保存APP动态解析结果信息
 	 * @param appDynamicResult
+	 * @param channel
 	 */
 	@Override
-	public void saveAppDynamicAnylasisResult(AppDynamicResult appDynamicResult) {
+	public void saveAppDynamicAnylasisResult(AppDynamicResult appDynamicResult,int channel) {
 
 		List<AppDynamicParseUrl> appUrlList = new ArrayList<>();
 
@@ -50,7 +51,9 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 			appDynamicParseUrl.setAppId(appDynamicResult.getAppId());
 			appDynamicParseUrl.setUrl(urlIterator.next());
 			appDynamicParseUrl.setType(1);
+			appDynamicParseUrl.setChannel(channel);
 			appUrlList.add(appDynamicParseUrl);
+
 		}
 		//解析请求图片地址信息(2)
 		urlIterator = appDynamicResult.getAppUrlByImageSet().iterator();
@@ -60,6 +63,7 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 			appDynamicParseUrl.setAppId(appDynamicResult.getAppId());
 			appDynamicParseUrl.setUrl(urlIterator.next());
 			appDynamicParseUrl.setType(3);
+			appDynamicParseUrl.setChannel(channel);
 			appUrlList.add(appDynamicParseUrl);
 		}
 
@@ -71,6 +75,7 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 			appDynamicParseUrl.setAppId(appDynamicResult.getAppId());
 			appDynamicParseUrl.setUrl(urlIterator.next());
 			appDynamicParseUrl.setType(2);
+			appDynamicParseUrl.setChannel(channel);
 			appUrlList.add(appDynamicParseUrl);
 		}
 
@@ -80,6 +85,7 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 			AppDynamicParseWord appDynamicParseWord = new AppDynamicParseWord();
 			appDynamicParseWord.setId(UUID.randomUUID().toString());
 			appDynamicParseWord.setAppId(appDynamicResult.getAppId());
+			appDynamicParseWord.setChannel(channel);
 			appDynamicParseWord.setContent(urlIterator.next());
 			appWordList.add(appDynamicParseWord);
 		}
@@ -113,6 +119,6 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 
 		AppDynamicResult appDynamicResult = appDynamicAnalyseService.getAppDynamicAnalysisResult(requestPath,responsePath);
 		appDynamicResult.setAppId(appId);
-		this.saveAppDynamicAnylasisResult(appDynamicResult);
+		this.saveAppDynamicAnylasisResult(appDynamicResult,0);
 	}
 }

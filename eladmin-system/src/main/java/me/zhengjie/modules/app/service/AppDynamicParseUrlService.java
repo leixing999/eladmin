@@ -17,8 +17,9 @@ public interface AppDynamicParseUrlService {
     /***
      * 保存APP动态解析结果信息
      * @param appDynamicResult
+     * @param channel
      */
-    void saveAppDynamicAnylasisResult(AppDynamicResult appDynamicResult);
+    void saveAppDynamicAnylasisResult(AppDynamicResult appDynamicResult,int channel);
 
     /****
      * 保存APP动态解析结果信息

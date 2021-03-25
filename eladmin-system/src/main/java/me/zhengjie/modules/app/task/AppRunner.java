@@ -34,6 +34,11 @@ public class AppRunner implements ApplicationRunner {
     //是否启用FTP 下载(1开启，0：关闭）
     @Value("${file.apk.isFtpDownload}")
     int isFtpDownload;
+    //是否启用动态解析 下载(1开启，0：关闭）
+    @Value("${file.apk.isDynamicParse}")
+    int isDynamicParse;
+
+
     @Autowired
     AppService appService;
     @Override
@@ -80,6 +85,52 @@ public class AppRunner implements ApplicationRunner {
             }
         }.start();
 
+
+        //启动动态解析进程
+        new Thread(){
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        //启动动态解析进程(1开启，0：关闭）
+                        if(isDynamicParse==1){
+                            appService.dynamicAnalyseApp();
+                        }
+
+                        Thread.sleep(100000);
+                    }catch (Exception ex){
+                        System.out.println(ex);
+                    }
+
+                }
+            }
+        }.start();
+
+
+        //启动白名单进程
+        new Thread(){
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        //是否开启白名单(1开启，0：关闭）
+                        if(isWhitelist==1){
+                            appService.runAppWhiteList();
+                        }
+
+                        Thread.sleep(100000);
+                    }catch (Exception ex){
+                        System.out.println(ex);
+                    }
+
+                }
+            }
+        }.start();
+
+
+
+
+
         //启动文件分析处理方式
         while(true){
             try {
@@ -93,13 +144,15 @@ public class AppRunner implements ApplicationRunner {
                     appService.parseAppUrlFiles();
 
                 }
-                //是否开启白名单(1开启，0：关闭）
-                if(isWhitelist==1){
-                    appService.runAppWhiteList();
-                }
+//                //是否开启白名单(1开启，0：关闭）
+//                if(isWhitelist==1){
+//                    appService.runAppWhiteList();
+//                }
+//
 
-                appService.dynamicAnalyseApp();
                 //appService.staticAnalyseApp();
+
+                appService.dumpAnalyseApp();
 
                 Thread.sleep(10000);
             }catch (Exception ex){

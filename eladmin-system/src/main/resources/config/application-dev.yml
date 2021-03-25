@@ -145,6 +145,9 @@ file:
     ####是否开启过滤文件保存(1开启，0：关闭）
     isSaveFileFilter: 0
 
+    ####是否开启动态解析APK(1开启，0：关闭）
+    isDynamicParse: 0
+
     #####url过滤机制
     filter:
       ####广告点击数（开始结束）
@@ -184,7 +187,7 @@ file:
 #####虚拟机配置环境
 appVirtualMachine:
   ####appium请求网关地址
-  appiumUrl: http://127.0.0.1:4723/wd/hub
+  appiumUrl: http://192.168.0.101:4723/wd/hub
   ####app 模拟器地址
   appVirtualMachineUrl: 192.168.0.101:5555
 ####动态分析日志文件
@@ -195,6 +198,12 @@ appDynamic:
   responsePath: E:\apklog\response.txt
   #####动态分析下载目录
   apkDynamicLogPath: E:\apklog\
+###app脱壳
+appDumpAnalyse:
+  ###apk脱壳执行命令
+  runCommand: 'cmd /c E: && cd E:\software\jadx\jadx1\bin && jadx -d '
+  ###apk脱壳文件存放路径
+  appDumpPath: d:\apkpath
 
   # 文件大小 /M
   maxSize: 100

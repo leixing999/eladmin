@@ -81,7 +81,7 @@ public class AppTelecomWhitelistServiceImpl implements AppTelecomWhitelistServic
 		appTelecomWhitelist.setAppPackageName(apkInfo.getPackageName());
 		appTelecomWhitelist.setStatus(1);
 		appTelecomWhitelist.setAppFilename(fileName);
-		appTelecomWhitelist.setAppVersion(apkInfo.getVersionName());
+		appTelecomWhitelist.setAppVersion("");
 		List<AppTelecomWhitelistPermission> permissionList = new ArrayList<>();
 		for(String permission : apkInfo.getUsesPermissions()){
 			AppTelecomWhitelistPermission appTelecomWhitelistPermission = new AppTelecomWhitelistPermission();

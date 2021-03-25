@@ -56,4 +56,13 @@ public class AppDynamicParseUrl implements Serializable {
 	@ApiModelProperty(value = "1：域名，2：html,3:图片资源")
 	@Column(name = "type", nullable = true, length = 11)
 	private Integer type;
+
+	/**
+	 * 来源渠道
+	 * nullable : true
+	 * default  : null
+	 */
+	@ApiModelProperty(value = "渠道0:动态分析，1：静态分析")
+	@Column(name = "channel", nullable = true)
+	private Integer channel;
 }
