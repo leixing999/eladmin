@@ -39,6 +39,11 @@ public class AppRunner implements ApplicationRunner {
     int isDynamicParse;
 
 
+    //是否启用脱壳 下载(1开启，0：关闭）
+    @Value("${file.apk.isDump}")
+    int isDump;
+
+
     @Autowired
     AppService appService;
     @Override
@@ -128,6 +133,27 @@ public class AppRunner implements ApplicationRunner {
         }.start();
 
 
+        //启动脱壳进程
+        new Thread(){
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        //是否开启脱壳(1开启，0：关闭）
+                        if(isDump==1){
+                            appService.dumpAnalyseApp();
+                        }
+
+                        Thread.sleep(100000);
+                    }catch (Exception ex){
+                        System.out.println(ex);
+                    }
+
+                }
+            }
+        }.start();
+
+
 
 
 
@@ -152,7 +178,7 @@ public class AppRunner implements ApplicationRunner {
 
                 //appService.staticAnalyseApp();
 
-                appService.dumpAnalyseApp();
+               //
 
                 Thread.sleep(10000);
             }catch (Exception ex){

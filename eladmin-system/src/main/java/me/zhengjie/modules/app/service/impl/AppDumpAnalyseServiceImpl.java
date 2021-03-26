@@ -59,12 +59,13 @@ public class AppDumpAnalyseServiceImpl implements AppDumpAnalyseService {
             String cmdStr =  "cmd /c E: && cd E:\\software\\jadx\\jadx1\\bin && jadx -d ";
             String cmd = "";
             if("".equals(runCommand)){
-                cmd = cmdStr + dumpDespPath + "\\" + file.getName().substring(0, file.getName().length() - 4) + " " +
+                cmd = cmdStr + dumpDespPath + File.separator + file.getName().substring(0, file.getName().length() - 4) + " " +
                         file.getAbsolutePath();
             }else{
-                cmd = runCommand + dumpDespPath + "\\" + file.getName().substring(0, file.getName().length() - 4) + " " +
+                cmd = runCommand + dumpDespPath + File.separator + file.getName().substring(0, file.getName().length() - 4) + " " +
                         file.getAbsolutePath();
             }
+            System.out.println("cmd【"+cmd+"】");
             //解包APK
             Process process = Runtime.getRuntime().exec(cmd);
             final InputStream in = process.getInputStream();
@@ -72,7 +73,7 @@ public class AppDumpAnalyseServiceImpl implements AppDumpAnalyseService {
             while ((ch = in.read()) != -1) {
                 System.out.print((char) ch);
             }
-            appDumpVO.setDespFilePath(dumpDespPath + "\\" + file.getName().substring(0, file.getName().length() - 4));
+            appDumpVO.setDespFilePath(dumpDespPath + File.separator + file.getName().substring(0, file.getName().length() - 4));
             //关闭进程
             process.destroy();
             return appDumpVO;
@@ -97,7 +98,8 @@ public class AppDumpAnalyseServiceImpl implements AppDumpAnalyseService {
             List<AppTelecomLink> list = appTelecomLinkRepository.findAppTelecomLinkByAppIsDownAndAppIsDump(1,0);
             for(AppTelecomLink appTelecomLink : list){
                 String fileName = appTelecomLink.getAppFileName();
-                AppDumpVO appDumpVO = this.apkDump(appSavePath+fileName,appDumpPath,runCommand.replace("'",""));
+                String sysFilePath = appSavePath+appTelecomLink.getAppSysRelativePath()+File.separator+appTelecomLink.getAppSysFileName();
+                AppDumpVO appDumpVO = this.apkDump(sysFilePath,appDumpPath,runCommand.replace("'",""));
                 if(appDumpVO.isDump()){
 
                     //脱壳分析json数据
@@ -116,6 +118,7 @@ public class AppDumpAnalyseServiceImpl implements AppDumpAnalyseService {
                     for(String fileStr : dumpXmlDesFileList){
                         StringBuffer buffer = appDynamicAnalyseService.getAppDynamicParseLog(fileStr,"utf-8");
                         AppDynamicResult appDynamicResult = appDynamicAnalyseService.analysisXml(buffer);
+                        appDynamicResult.setAppId(appTelecomLink.getId());
                         appDynamicParseUrlService.saveAppDynamicAnylasisResult(appDynamicResult,1);
                     }
 

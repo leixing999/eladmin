@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -110,7 +111,8 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 		for(AppTelecomLink appTelecomLink : appTelecomLinks){
 
 			System.out.println(appTelecomLink.getAppFileName());
-			String appPath = appSavePath+appTelecomLink.getAppFileName();
+//			String appPath = appSavePath+appTelecomLink.getAppFileName();
+			String appPath = appSavePath+appTelecomLink.getAppSysRelativePath()+ File.separator+appTelecomLink.getAppSysFileName();
 			appTelecomLink.setAppIsAnalyse(1);
 			try {
 				ApkInfo apkInfo = new ApkUtil(aaptPath).getApkInfo(appPath);

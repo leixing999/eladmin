@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 
@@ -53,6 +54,16 @@ public class AppDynamicServiceImpl implements AppDynamicService {
     //apk保存的路径
     @Value("${file.apk.appSavePath}")
     String appSavePath;
+
+
+    //是否开启虚拟路径（1：开启，0：禁用）
+    @Value("${appDynamic.isVirtualPath}")
+    int isVirtualPath;
+
+    //虚拟路径
+    @Value("${appDynamic.virtualPath}")
+    String virtualPath;
+
     /****
      * 删除远程服务的apk动态生成的日志文件
      */
@@ -101,7 +112,11 @@ public class AppDynamicServiceImpl implements AppDynamicService {
         cap.setCapability("deviceName", virtualMachineUrl);
 
         try {
-            cap.setCapability("app", appSavePath+appPath);
+            if(isVirtualPath==1) {
+                cap.setCapability("app", this.virtualPath + appPath);
+            }else{
+                cap.setCapability("app", appSavePath + appPath);
+            }
             driver = new AndroidDriver(new URL(appiumUrl), cap);
             driver.installApp("app");
             driver.quit();
@@ -151,8 +166,10 @@ public class AppDynamicServiceImpl implements AppDynamicService {
                 try {
                     //清空动态解析APP日志文件（1）
                     this.deleteRemoteApkDynamicLog();
+
+                    String sysRelativeFilePath = appLink.getAppSysRelativePath()+ File.separator+appLink.getAppSysFileName();
                     //安装APP（2）
-                    this.installApp(appLink.getAppFileName(), appiumUrl, virtualMachineUrl);
+                    this.installApp(sysRelativeFilePath, appiumUrl, virtualMachineUrl);
                     Thread.sleep(30000);
                     //获取动态解析APP日志文件(3)
                     this.downloadRemoteApkDynamicLog();

@@ -2,6 +2,7 @@ package me.zhengjie.modules.app.thread;
 
 import me.zhengjie.modules.app.domain.po.AppTelecomLink;
 import me.zhengjie.modules.app.domain.vo.UrlPathVO;
+import me.zhengjie.utils.DateUtil;
 
 import java.util.Date;
 import java.util.UUID;
@@ -24,11 +25,13 @@ public class ThreadDownloadCallable implements Callable<AppTelecomLink> {
     @Override
     public AppTelecomLink call() throws Exception {
 
+        String appSysFileName = UUID.randomUUID().toString()+".apk";
+        String relativeFilePath = DateUtil.getDefaultDateStr();
         long beginTime = System.currentTimeMillis();
         HttpDownloadService mtd = new HttpDownloadService(
                 urlPathVO.getRequestApkUrlPath(),
-                appSavePath + urlPathVO.getApkFileName(),
-                1);
+                appSavePath + relativeFilePath,
+                1,appSysFileName);
 
         long fileSize = mtd.download(maxFileSize);
         boolean isLimit = mtd.getIsLimit();
@@ -45,6 +48,9 @@ public class ThreadDownloadCallable implements Callable<AppTelecomLink> {
             appTelecomLink.setId(UUID.randomUUID().toString());
             appTelecomLink.setAppRelFileId(this.fileId);
             appTelecomLink.setAppAddTime(new Date());
+            appTelecomLink.setAppSysFileName(appSysFileName);
+            appTelecomLink.setAppSysRelativePath(relativeFilePath);
+
 
             appTelecomLink.setAppDownloadSpendTime(Integer.parseInt(""+(endTime-beginTime)));
         }

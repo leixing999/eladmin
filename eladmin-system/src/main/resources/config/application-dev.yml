@@ -118,18 +118,18 @@ file:
   ####静态解析APK的aapt存放地址
   aapt:
 #    path: d:\aapt
-    path: E:\aapt
+    path: d:\apk\aapt
   apk:
     ####白名单APK存放地址
     path: /home/media
     ####存放电信推送电信诈骗url文件地址
-    urlPath: g:\apk\
+    urlPath: d:\apk\
     ####支持每批次最多几个线程下载
     maxThread: 8
     ####支持下载的最大文件限制
     maxFileSize: 104857600
     ####app 下载保存的路径
-    appSavePath: G:\apkdownload\
+    appSavePath: d:\apk\apkdownload\
     ####是否开启权限入库(1开启，0：关闭）
     isPermission: 0
     ####是否开启白名单(1开启，0：关闭）
@@ -144,9 +144,11 @@ file:
     isFtpDownload: 0
     ####是否开启过滤文件保存(1开启，0：关闭）
     isSaveFileFilter: 0
+    ####是否开启脱壳(1开启，0：关闭）
+    isDump: 0
 
     ####是否开启动态解析APK(1开启，0：关闭）
-    isDynamicParse: 0
+    isDynamicParse: 1
 
     #####url过滤机制
     filter:
@@ -157,19 +159,19 @@ file:
       visitStartNum: 0
       visitEndNum: 2
       ####过滤文件保存路径
-      filterPath: g:\apk\filter\
+      filterPath: d:\apk\filter\
     ####增加FTP配置信息
     ftp:
       #####虚拟机下载FTP配置信息
       virtualMachineDownload:
         ###IP
-        ip: 127.0.0.1
+        ip: 192.168.0.101
         ###端口
         port: 21
         ###用户名
-        user: shxp
+        user: shxp2
         ###密码
-        password: shxp
+        password: shxp2
         ###请求路径
         dir: /log
       ####下载配置信息
@@ -193,17 +195,21 @@ appVirtualMachine:
 ####动态分析日志文件
 appDynamic:
   ####动态分析请求日志文件路径
-  requestPath: E:\apklog\request.txt
+  requestPath: d:\apk\apklog\request.txt
   ####动态分析响应日志文件路径
-  responsePath: E:\apklog\response.txt
+  responsePath: d:\apk\apklog\response.txt
   #####动态分析下载目录
-  apkDynamicLogPath: E:\apklog\
+  apkDynamicLogPath: d:\apk\apklog\
+  ####是否开启虚拟路径（1：开启，0：禁用）
+  isVirtualPath: 1
+  ####虚拟路径
+  virtualPath: http://192.168.0.109:8081/
 ###app脱壳
 appDumpAnalyse:
   ###apk脱壳执行命令
   runCommand: 'cmd /c E: && cd E:\software\jadx\jadx1\bin && jadx -d '
   ###apk脱壳文件存放路径
-  appDumpPath: d:\apkpath
+  appDumpPath: d:\apk\apkdump
 
   # 文件大小 /M
   maxSize: 100

@@ -10,15 +10,19 @@ import java.net.URL;
 public class HttpDownloadService {
     private String str_url;
     private String storagePath;
+
+    private String appSysFileName;
+    private String appSysRelativeFileName;
     private int threadNumber;
     private long downloadByteCount;
     private int failThreadNum ;
     private boolean isDown;
     private boolean isLimit;
 
-   public HttpDownloadService(String str_url, String storagePath, int threadNumber) {
+   public HttpDownloadService(String str_url, String storagePath, int threadNumber,String appSysFileName) {
         this.str_url = str_url;
         this.storagePath = storagePath;
+        this.appSysFileName = appSysFileName;
         this.threadNumber = threadNumber;
         this.failThreadNum = 0;
         this.isDown = false;
@@ -65,7 +69,12 @@ public class HttpDownloadService {
         if( fileLength<10000){
             return fileLength;
         }
-        RandomAccessFile file = new RandomAccessFile(storagePath, "rwd");
+
+        File sysFileDir = new File(storagePath);
+        if(sysFileDir.isDirectory()==false){
+            sysFileDir.mkdir();
+        }
+        RandomAccessFile file = new RandomAccessFile(storagePath+File.separator+this.appSysFileName, "rwd");
         file.setLength(fileLength); // 关键方法 ： 设置本地文件长度
         file.close();
 
@@ -111,7 +120,7 @@ public class HttpDownloadService {
             conn.setRequestProperty("Content-Length","8192");
             conn.setRequestProperty("Range", "bytes=" + startPosition + "-" + endPosition); // 关键方法: 每条线程请求的字节范围
             if (conn.getResponseCode() == HttpURLConnection.HTTP_PARTIAL) { // 关键响应码 ：206，请求成功 + 请求数据字节范围成功
-                RandomAccessFile file = new RandomAccessFile(storagePath, "rwd");
+                RandomAccessFile file = new RandomAccessFile(storagePath+File.separator+this.appSysFileName, "rwd");
                 file.seek(startPosition); // 关键方法 ：每条线程起始写入文件的位置
                 InputStream in = conn.getInputStream();
                 byte[] buf = new byte[8*1024];

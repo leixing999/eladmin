@@ -16,6 +16,7 @@
 
 package me.zhengjie.utils;
 
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -29,6 +30,8 @@ public class DateUtil {
 
     public static final DateTimeFormatter DFY_MD_HMS = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final DateTimeFormatter DFY_MD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final String MD_STR = "yyyy-MM-dd";
+    public static final String MD_HMS_STR = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * LocalDateTime 转时间戳
@@ -156,5 +159,33 @@ public class DateUtil {
      */
     public static LocalDateTime parseLocalDateTimeFormatyMdHms(String localDateTime) {
         return LocalDateTime.from(DFY_MD_HMS.parse(localDateTime));
+    }
+
+    /****
+     * 接受带格式化的日期转换字符串（yyyy-MM-dd HH:mm:ss)
+     * @param dateFormatStr
+     * @return
+     */
+    public static String getDefaultDateStr(String dateFormatStr){
+        String dateStr = "";
+        try{
+
+          SimpleDateFormat sdf = new SimpleDateFormat(dateFormatStr);
+            dateStr = sdf.format(new Date());
+
+        }catch(Exception ex){
+
+            System.out.println(ex);
+        }
+        return dateStr;
+    }
+
+    /****
+     * 获取默认格式时间（yyyy-MM-dd)
+     * @return
+     */
+    public static String getDefaultDateStr(){
+
+        return getDefaultDateStr(MD_STR);
     }
 }

@@ -192,4 +192,22 @@ public class AppTelecomLink implements Serializable {
 	@Column(name = "app_is_dump", nullable = true)
 	private Integer appIsDump;
 
+
+	/**
+	 * 系统文件名
+	 * nullable : true
+	 * default  : null
+	 */
+	@ApiModelProperty(value = "系统文件名")
+	@Column(name = "app_sys_file_name", nullable = true, length = 600)
+	private String appSysFileName;
+
+	/**
+	 * 系统文件名
+	 * nullable : true
+	 * default  : null
+	 */
+	@ApiModelProperty(value = "系统相对路径")
+	@Column(name = "app_sys_relative_path", nullable = true, length = 600)
+	private String appSysRelativePath;
 }

@@ -4,8 +4,8 @@ spring:
     druid:
       db-type: com.alibaba.druid.pool.DruidDataSource
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      url: jdbc:log4jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:eladmin}?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
-      username: ${DB_USER:root}
+      url: jdbc:log4jdbc:mysql://${DB_HOST:39.99.185.7}:${DB_PORT:3305}/${DB_NAME:eladmin}?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+      username: ${DB_USER:dbuser}
       password: ${DB_PWD:123456}
       # 初始连接数
       initial-size: 5
@@ -13,8 +13,12 @@ spring:
       min-idle: 15
       # 最大连接数
       max-active: 30
+      # 是否自动回收超时连接
+      remove-abandoned: true
+      # 超时时间(以秒数为单位)
+      remove-abandoned-timeout: 180
       # 获取连接超时时间
-      max-wait: 5000
+      max-wait: 3000
       # 连接有效性检测时间
       time-between-eviction-runs-millis: 60000
       # 连接在池中最小生存的时间
@@ -34,11 +38,8 @@ spring:
         enabled: true
       stat-view-servlet:
         enabled: true
-        # 控制台管理用户名和密码
         url-pattern: /druid/*
         reset-enable: false
-        login-username: admin
-        login-password: 123456
       filter:
         stat:
           enabled: true
@@ -68,7 +69,7 @@ login:
     height: 36
     # 内容长度
     length: 2
-    # 字体名称，为空则使用默认字体，如遇到线上乱码，设置其他字体即可
+    # 字体名称，为空则使用默认字体
     font-name:
     # 字体大小
     font-size: 25
@@ -80,35 +81,28 @@ jwt:
   token-start-with: Bearer
   # 必须使用最少88位的Base64对该令牌进行编码
   base64-secret: ZmQ0ZGI5NjQ0MDQwY2I4MjMxY2Y3ZmI3MjdhN2ZmMjNhODViOTg1ZGE0NTBjMGM4NDA5NzYxMjdjOWMwYWRmZTBlZjlhNGY3ZTg4Y2U3YTE1ODVkZDU5Y2Y3OGYwZWE1NzUzNWQ2YjFjZDc0NGMxZWU2MmQ3MjY1NzJmNTE0MzI=
-  # 令牌过期时间 此处单位/毫秒 ，默认2小时，可在此网站生成 https://www.convertworld.com/zh-hans/time/milliseconds.html
-  token-validity-in-seconds: 7200000
+  # 令牌过期时间 此处单位/毫秒 ，默认4小时，可在此网站生成 https://www.convertworld.com/zh-hans/time/milliseconds.html
+  token-validity-in-seconds: 14400000
   # 在线用户key
   online-key: online-token-
   # 验证码
   code-key: code-key-
-  # token 续期检查时间范围（默认30分钟，单位默认毫秒），在token即将过期的一段时间内用户操作了，则给用户的token续期
+  # token 续期检查时间范围（默认30分钟，单位毫秒），在token即将过期的一段时间内用户操作了，则给用户的token续期
   detect: 1800000
-  # 续期时间范围，默认 1小时，这里单位毫秒
+  # 续期时间范围，默认1小时，单位毫秒
   renew: 3600000
-
-# IP 本地解析
-ip:
-  local-parsing: false
 
 #是否允许生成代码，生产环境设置为false
 generator:
-  enabled: false
-
-#如果生产环境要开启swagger，需要配置请求地址
-#springfox:
-#  documentation:
-#    swagger:
-#      v2:
-#        host: # 接口域名或外网ip
+  enabled: true
 
 #是否开启 swagger-ui
 swagger:
-  enabled: false
+  enabled: true
+
+# IP 本地解析
+ip:
+  local-parsing: true
 
 # 文件存储路径
 file:
@@ -123,28 +117,100 @@ file:
     avatar: C:\eladmin\avatar\
   ####静态解析APK的aapt存放地址
   aapt:
-    path: E:\aapt
+    #    path: d:\aapt
+    path: /home/app/aapt/aapt
   apk:
     ####白名单APK存放地址
-    path: D:\BaiduNetdiskDownload\APK
+    path: /home/app/white
     ####存放电信推送电信诈骗url文件地址
-    urlPath: D:\apk\
+    urlPath: /home/app/url
     ####支持每批次最多几个线程下载
-    maxThread: 10
+    maxThread: 8
     ####支持下载的最大文件限制
     maxFileSize: 104857600
     ####app 下载保存的路径
-    appSavePath: G:\apkdownload\
+    appSavePath: /home/app/apkdownload/
     ####是否开启权限入库(1开启，0：关闭）
     isPermission: 0
     ####是否开启白名单(1开启，0：关闭）
-    isWhitelist: 0
+    isWhitelist: 1
     ###是否开启静态分析(1开启，0：关闭）
     isStatic: 0
     ####是否开启解析URL(1开启，0：关闭）
     isParse: 0
     ####是否开启扫描文件夹(1开启，0：关闭）
     isSearch: 0
+    ####是否启用FTP 下载(1开启，0：关闭）
+    isFtpDownload: 0
+    ####是否开启过滤文件保存(1开启，0：关闭）
+    isSaveFileFilter: 0
+    ####是否开启脱壳(1开启，0：关闭）
+    isDump: 0
+
+    ####是否开启动态解析APK(1开启，0：关闭）
+    isDynamicParse: 0
+
+    #####url过滤机制
+    filter:
+      ####广告点击数（开始结束）
+      adStart: 0
+      adEnd: 2
+      ####访问数（开始，结束）
+      visitStartNum: 0
+      visitEndNum: 2
+      ####过滤文件保存路径
+      filterPath: /home/app/filter/
+    ####增加FTP配置信息
+    ftp:
+      #####虚拟机下载FTP配置信息
+      virtualMachineDownload:
+        ###IP
+        ip: 192.168.0.101
+        ###端口
+        port: 21
+        ###用户名
+        user: shxp2
+        ###密码
+        password: shxp2
+        ###请求路径
+        dir: /log
+      ####下载配置信息
+      download:
+        ###IP
+        ip: 39.99.185.7
+        ###端口
+        port: 21
+        ###用户名
+        user: shxp
+        ###密码
+        password: shxp
+        ###请求路径
+        dir: /apk/
+#####虚拟机配置环境
+appVirtualMachine:
+  ####appium请求网关地址
+  appiumUrl: http://192.168.0.101:4723/wd/hub
+  ####app 模拟器地址
+  appVirtualMachineUrl: 192.168.0.101:5555
+####动态分析日志文件
+appDynamic:
+  ####动态分析请求日志文件路径
+  requestPath: /home/app/apklog/request.txt
+  ####动态分析响应日志文件路径
+  responsePath: /home/app/apklog/response.txt
+  #####动态分析下载目录
+  apkDynamicLogPath: /home/app/apklog/
+  ####是否开启虚拟路径（1：开启，0：禁用）
+  isVirtualPath: 1
+  ####虚拟路径
+  virtualPath: http://192.168.0.109:8081/
+###app脱壳
+appDumpAnalyse:
+  ###apk脱壳执行命令
+  runCommand: '/home/app/jadx/bin/jadx -d '
+  ###apk脱壳文件存放路径
+  appDumpPath: /home/app/apkdump
+
   # 文件大小 /M
   maxSize: 100
   avatarMaxSize: 5
