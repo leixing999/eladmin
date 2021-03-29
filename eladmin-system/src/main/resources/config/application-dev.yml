@@ -149,6 +149,8 @@ file:
 
     ####是否开启动态解析APK(1开启，0：关闭）
     isDynamicParse: 0
+    ####是否同步分析结果给电信(1开启，0：关闭）
+    isSync: 0
 
     #####url过滤机制
     filter:
