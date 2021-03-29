@@ -60,6 +60,10 @@ public class AppDataSyncRunner implements ApplicationRunner {
     @Value("${file.apk.ftp.upload.dir}")
     String dir;
 
+    //是否同步
+    @Value("${file.apk.isSync}")
+    Integer isSync;
+
     //临时文件存放路径
     @Value("${file.apk.ftp.upload.tempDir}")
     String tempDir;
@@ -69,13 +73,14 @@ public class AppDataSyncRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-
-        while(true){
-            try {
-                uploadToClient();
-                Thread.sleep(1000000);
-            }catch(Exception ex){
-                System.out.println(ex);
+        if(isSync==1) {
+            while (true) {
+                try {
+                    uploadToClient();
+                    Thread.sleep(1000000);
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
             }
         }
 
