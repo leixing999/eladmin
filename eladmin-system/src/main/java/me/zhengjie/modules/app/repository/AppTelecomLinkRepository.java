@@ -48,6 +48,16 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
      */
     List<AppTelecomLink> findAppTelecomLinkByAppIsDownAndAppIsDump(int isDown,int isDump);
 
+
+    /*****
+     * 搜索没有静态分析的APP
+     * @param isAnalyse
+     * @param isDown
+     * @param isSync
+     * @return
+     */
+    List<AppTelecomLink> findAppTelecomLinkByAppIsAnalyseAndAppIsDownAndAppIsSync(int isAnalyse,int isDown,int isSync);
+
     /****
      * 通过对app进行静态分析对此App的参数信息进行跟新
      * @param appTelecomLink
@@ -108,6 +118,19 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
             " app_is_dump=?2 " +
             " where  id=?1",nativeQuery = true)
     void updateAppTelecomLinkByDump(String id,Integer isDump);
+
+    /****
+     * 通过对app进行同步状态
+     * @param id
+     * @param isDump
+     */
+    @Modifying
+    @Transactional
+    @Query(value=" update app_telecom_link " +
+            " set " +
+            " app_is_sync=?2 " +
+            " where  id=?1",nativeQuery = true)
+    void updateAppTelecomLinkBySync(String id,Integer isDump);
 
 
 }

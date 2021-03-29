@@ -210,4 +210,13 @@ public class AppTelecomLink implements Serializable {
 	@ApiModelProperty(value = "系统相对路径")
 	@Column(name = "app_sys_relative_path", nullable = true, length = 600)
 	private String appSysRelativePath;
+
+	/**
+	 * 系统是否同步
+	 * nullable : true
+	 * default  : null
+	 */
+	@ApiModelProperty(value = "0：待同步，1：同步完完，-1：同步异常")
+	@Column(name = "app_is_sync", nullable = true)
+	private Integer appIsSync;
 }

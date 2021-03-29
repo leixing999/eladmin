@@ -205,6 +205,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
                     appTelecomLink.setAppType(0);
                     appTelecomLink.setAppIsDynamic(0);
                     appTelecomLink.setAppIsDump(0);
+                    appTelecomLink.setAppIsSync(0);
                     appTelecomLinkService.saveAppTelecomLink(appTelecomLink);
                 }
 

@@ -186,6 +186,20 @@ file:
         password: shxp
         ###请求路径
         dir: /apk/
+      ####上传解包信息给电信FTP
+      upload:
+        ###IP
+        ip: 39.99.185.7
+        ###端口
+        port: 21
+        ###用户名
+        user: shxp
+        ###密码
+        password: shxp
+        ###请求路径
+        dir: /apk/
+        ####生成上传文件的临时目录
+        tempDir: /home/upload/
 #####虚拟机配置环境
 appVirtualMachine:
   ####appium请求网关地址
