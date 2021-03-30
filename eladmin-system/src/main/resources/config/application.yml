@@ -5,7 +5,7 @@ spring:
   freemarker:
     check-template-location: false
   profiles:
-    active: prod
+    active: dev
   jackson:
     time-zone: GMT+8
   data:
@@ -29,7 +29,20 @@ spring:
     password: ${REDIS_PWD:}
     #连接超时时间
     timeout: 5000
-
+####增肌mybatis-plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    auto-mapping-behavior: full
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  global-config:
+    # 逻辑删除配置
+    db-config:
+      # 删除前
+      logic-not-delete-value: 1
+      # 删除后
+      logic-delete-value: 0
 task:
   pool:
     # 核心线程池大小

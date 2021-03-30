@@ -1,19 +1,13 @@
 package me.zhengjie.modules.app.task;
 
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.text.csv.CsvUtil;
 import cn.hutool.core.text.csv.CsvWriter;
 import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
 import me.zhengjie.modules.app.domain.po.AppDynamicParseUrl;
 import me.zhengjie.modules.app.domain.po.AppTelecomLink;
-import me.zhengjie.modules.app.domain.vo.AppCsvVO;
-import me.zhengjie.modules.app.domain.vo.UrlPathVO;
-import me.zhengjie.modules.app.repository.AppDictRepository;
 import me.zhengjie.modules.app.repository.AppDynamicParseUrlRepository;
 import me.zhengjie.modules.app.repository.AppTelecomLinkRepository;
-import me.zhengjie.modules.app.service.AppDictService;
+import me.zhengjie.modules.test.service.ITestService;
 import me.zhengjie.utils.FTPUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +17,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import static java.util.stream.Collectors.collectingAndThen;
@@ -41,6 +34,9 @@ public class AppDataSyncRunner implements ApplicationRunner {
     AppTelecomLinkRepository appTelecomLinkRepository;
     @Autowired
     AppDynamicParseUrlRepository appDynamicParseUrlRepository;
+
+
+
     //虚拟路径
     @Value("${appDynamic.virtualPath}")
     String virtualPath;

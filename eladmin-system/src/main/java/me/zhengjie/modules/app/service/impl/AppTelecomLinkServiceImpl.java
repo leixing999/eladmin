@@ -122,9 +122,8 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 				appTelecomLink.setAppVersion("");
 				appTelecomLink.setAppType(2);
 				//判断APP是否在白名单里
-				if(appTelecomWhitelistRepository.findByAppApplicationNameAndAndAppClassNameAndAndAppPackageName(
+				if(appTelecomWhitelistRepository.findByAppApplicationNameAAndAppPackageName(
 						appTelecomLink.getAppApplicationName(),
-						appTelecomLink.getAppClassName(),
 						appTelecomLink.getAppPackageName()).size()>0){
 					appTelecomLink.setAppType(3);
 
