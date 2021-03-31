@@ -235,10 +235,25 @@ class HttpProxy extends Thread {
     //        HttpProxy.log = System.out;
     //        HttpProxy.logging = false;
     //        HttpProxy.startProxy(8888, HttpProxy.class);
-        AppDynamicService appDynamicService = new AppDynamicServiceImpl();
-        appDynamicService.installApp("D:\\apkdownload\\toutiao_unsigned_signed.apk","http://127.0.0.1:4723/wd/hub","192.168.0.101:5555");
+       // AppDynamicService appDynamicService = new AppDynamicServiceImpl();
+        //appDynamicService.installApp("D:\\apkdownload\\toutiao_unsigned_signed.apk","http://127.0.0.1:4723/wd/hub","192.168.0.101:5555");
 //        appDynamicService.uninstallApp("com.wbiao.wbapp","http://127.0.0.1:4723/wd/hub","192.168.0.101:5555");
 
+       String url = "http://115.231.37.143/dd.myapp.com/16891/apk/0BDF21363EDB4790E2962E85E7D57882.apk?mkey=604e388274eb2c57&f=24c3&fsname=http://126.com/com.neusoft.ebpp_2.18.0_21800.apk&cip=116.235.10.162&proto=http";
+
+//        String url ="https://01.android2019-phone.s-e-m.cn:8090/ZhongXinYiYuanGuShi_yxdown.com.apk";
+        String regex = "(ht|f)tp(s?)\\:\\/\\/[0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*(:(0-9)*)*(\\/?)([a-zA-Z0-9\\-\\.\\?\\,\\'\\/\\\\&%\\+\\$#_=]*)?";
+
+
+        String pattern = "/(?<=http:\")([^\"]*?)(?=\")/g";
+// 创建 Pattern 对象
+        Pattern r = Pattern.compile(pattern);
+// 现在创建 matcher 对象
+        Matcher m = r.matcher(url);
+        if(m.find()){
+            String file = m.group();
+            System.out.println(file);
+        }
     }
 
 

@@ -133,13 +133,14 @@ public class UrlPathService {
         String requestUrlPath = "";
         try {
             //获取apk文件起始位置
-            int apkPosition = url.lastIndexOf(".apk");
+            int apkLastPosition = url.lastIndexOf(".apk");
+            int apkFristPosition = url.indexOf(".apk");
             //获取http位置
             int httpPosition = url.lastIndexOf("https:") > 0 ? url.lastIndexOf("https:") : url.lastIndexOf("http:");
-            if (httpPosition > 0 && httpPosition< apkPosition) {
-                requestUrlPath = url.substring(httpPosition, apkPosition + 4);
+            if (httpPosition > 0 && httpPosition< apkLastPosition && (apkLastPosition>apkFristPosition)) {
+                requestUrlPath = url.substring(httpPosition, apkLastPosition + 4);
             } else {
-                requestUrlPath = url.substring(0, apkPosition + 4);
+                requestUrlPath = url.substring(0, apkFristPosition + 4);
             }
         }catch(Exception ex){
             log.error("获取apk文件名称【getRequestUrlPath】："+url);
