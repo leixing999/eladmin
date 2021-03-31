@@ -158,7 +158,7 @@ public class AppDynamicServiceImpl implements AppDynamicService {
     @Override
     public void dynamicApp(String appiumUrl,String virtualMachineUrl) {
 
-        List<AppTelecomLink> list = appTelecomLinkService.findAppLinkByDynamicConditions(1,0);
+        List<AppTelecomLink> list = appTelecomLinkService.findAppLinkByDynamicConditions(1,1,0);
         for(AppTelecomLink appLink : list){
             //解析静态分析完成的APP
             if(appLink.getAppIsAnalyse()==1) {

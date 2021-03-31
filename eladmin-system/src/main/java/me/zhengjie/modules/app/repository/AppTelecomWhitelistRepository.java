@@ -28,5 +28,5 @@ public interface AppTelecomWhitelistRepository extends JpaRepository<AppTelecomW
      * @param appPackageName
      * @return
      */
-    List<AppTelecomWhitelist> findByAppApplicationNameAAndAppPackageName(String appName,String appPackageName);
+    List<AppTelecomWhitelist> findByAppApplicationNameAndAppPackageName(String appName,String appPackageName);
 }

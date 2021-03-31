@@ -103,6 +103,19 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 	}
 
 	/****
+	 * 获取动态条件
+	 * @param isDown
+	 * @param appType
+	 * @param isDynamic
+	 * @return
+	 */
+	@Override
+	public List<AppTelecomLink> findAppLinkByDynamicConditions(int isDown, int appType, int isDynamic) {
+
+		return appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamic(isDown,appType,isDynamic);
+	}
+
+	/****
 	 * 对APP静态分析
 	 */
 	@Override
@@ -122,7 +135,7 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 				appTelecomLink.setAppVersion("");
 				appTelecomLink.setAppType(2);
 				//判断APP是否在白名单里
-				if(appTelecomWhitelistRepository.findByAppApplicationNameAAndAppPackageName(
+				if(appTelecomWhitelistRepository.findByAppApplicationNameAndAppPackageName(
 						appTelecomLink.getAppApplicationName(),
 						appTelecomLink.getAppPackageName()).size()>0){
 					appTelecomLink.setAppType(3);

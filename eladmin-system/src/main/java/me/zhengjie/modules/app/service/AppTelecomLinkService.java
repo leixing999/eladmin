@@ -59,6 +59,16 @@ public interface AppTelecomLinkService {
     List<AppTelecomLink> findAppLinkByDynamicConditions(int isDown,int isDynamic);
 
     /****
+     * 通过isDynamic,appType和isdown组合条件查找(针对黑名单）
+     * 已下载但是为东态分析的app
+     * @param isDynamic
+     * @param isDown
+     * @param appType
+     * @return
+     */
+    List<AppTelecomLink> findAppLinkByDynamicConditions(int isDown,int appType,int isDynamic);
+
+    /****
      * 静态分析APP
      */
     void staticAnalyseApp();

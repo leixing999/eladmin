@@ -95,7 +95,7 @@ public class AppDumpAnalyseServiceImpl implements AppDumpAnalyseService {
 
         try{
 
-            List<AppTelecomLink> list = appTelecomLinkRepository.findAppTelecomLinkByAppIsDownAndAppIsDump(1,0);
+            List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDump(1,1,0);
             for(AppTelecomLink appTelecomLink : list){
                 String fileName = appTelecomLink.getAppFileName();
                 String sysFilePath = appSavePath+appTelecomLink.getAppSysRelativePath()+File.separator+appTelecomLink.getAppSysFileName();
