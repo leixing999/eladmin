@@ -179,7 +179,24 @@ public class DateUtil {
         }
         return dateStr;
     }
+    /****
+     * 接受带格式化的日期转换字符串（yyyy-MM-dd HH:mm:ss)
+     * @param dateFormatStr
+     * @return
+     */
+    public static String getDefaultDateStr(String dateFormatStr,Date date){
+        String dateStr = "";
+        try{
 
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormatStr);
+            dateStr = sdf.format(date);
+
+        }catch(Exception ex){
+
+            System.out.println(ex);
+        }
+        return dateStr;
+    }
     /****
      * 获取默认格式时间（yyyy-MM-dd)
      * @return
@@ -188,4 +205,5 @@ public class DateUtil {
 
         return getDefaultDateStr(MD_STR);
     }
+
 }

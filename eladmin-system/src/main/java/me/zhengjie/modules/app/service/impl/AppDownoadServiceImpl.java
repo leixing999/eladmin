@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -185,7 +186,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
         List<Future<AppTelecomLink>> futures = null;
         try {
             //获取本批次线程执行队列结果信息
-            futures = executor.invokeAll(threadCallableList);
+            futures = executor.invokeAll(threadCallableList,300000,TimeUnit.MILLISECONDS);
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -199,7 +200,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
     private void delayAppThreadDownloadResult(List<Future<AppTelecomLink>> futureList){
         for(Future<AppTelecomLink> appTelecomLinkFuture : futureList){
             try {
-                AppTelecomLink appTelecomLink = appTelecomLinkFuture.get();
+                AppTelecomLink appTelecomLink = appTelecomLinkFuture.get(60, TimeUnit.SECONDS);
                 if(appTelecomLink!=null){
                     appTelecomLink.setAppIsAnalyse(0);
                     appTelecomLink.setAppType(0);

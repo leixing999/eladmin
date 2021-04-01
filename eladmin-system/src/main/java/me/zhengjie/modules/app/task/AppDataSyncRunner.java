@@ -8,6 +8,7 @@ import me.zhengjie.modules.app.domain.po.AppTelecomLink;
 import me.zhengjie.modules.app.repository.AppDynamicParseUrlRepository;
 import me.zhengjie.modules.app.repository.AppTelecomLinkRepository;
 import me.zhengjie.modules.test.service.ITestService;
+import me.zhengjie.utils.DateUtil;
 import me.zhengjie.utils.FTPUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,7 +87,7 @@ public class AppDataSyncRunner implements ApplicationRunner {
      * 上传到客户端
      */
     private void uploadToClient(){
-        List<AppTelecomLink> list = appTelecomLinkRepository.findAppTelecomLinkByAppIsAnalyseAndAppIsDownAndAppIsSync(1,1,0);
+        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(1,1,1,0);
 
 
         //判断是否存在可上传的文件
@@ -103,7 +104,7 @@ public class AppDataSyncRunner implements ApplicationRunner {
                             appTelecomLink.getAppApplicationName(),
                             appTelecomLink.getAppPackageName(),
                             appTelecomLink.getAppClassName(),
-                            appTelecomLink.getAppAddTime().toString(),
+                            DateUtil.getDefaultDateStr("yyyy-MM-dd HH:mm:ss",appTelecomLink.getAppAddTime()),
                             appDownloadUrl,
                             this.getAppDomains(appTelecomLink.getId())});
                 }
@@ -137,7 +138,8 @@ public class AppDataSyncRunner implements ApplicationRunner {
      */
     private String getAppDomains(String appId){
 
-        List<AppDynamicParseUrl> list = appDynamicParseUrlRepository.findByAppIdAndType(appId,1);
+        //对从数据库查询出来的域名信息进程处理
+        List<AppDynamicParseUrl> list = parseDomainUrl(appDynamicParseUrlRepository.findByAppIdAndType(appId,1));
         List<AppDynamicParseUrl> noRepeatList =  list.stream().collect(
                 collectingAndThen(
                         toCollection(() -> new TreeSet<>(Comparator.comparing(AppDynamicParseUrl::getUrl))), ArrayList::new));
@@ -146,5 +148,23 @@ public class AppDataSyncRunner implements ApplicationRunner {
             buffer.append(appDynamicParseUrl.getUrl()).append("|");
         }
         return buffer.toString();
+    }
+
+    /****
+     * 对结果进行处理
+     * @param list
+     * @return
+     */
+    private List<AppDynamicParseUrl>parseDomainUrl( List<AppDynamicParseUrl> list ){
+        List<AppDynamicParseUrl> deleayList = new ArrayList<>();
+        for(AppDynamicParseUrl parseUrl : list){
+            String url = parseUrl.getUrl();
+            if(url.lastIndexOf(":")>0){
+                parseUrl.setUrl(url.substring(0,url.lastIndexOf(":")));
+            }
+            deleayList.add(parseUrl);
+        }
+        return deleayList;
+
     }
 }

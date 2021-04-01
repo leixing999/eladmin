@@ -24,6 +24,7 @@ public class ThreadDownloadCallable implements Callable<AppTelecomLink> {
 
     @Override
     public AppTelecomLink call() throws Exception {
+        AppTelecomLink appTelecomLink = null;
 
         String appSysFileName = UUID.randomUUID().toString()+".apk";
         String relativeFilePath = DateUtil.getDefaultDateStr();
@@ -36,7 +37,6 @@ public class ThreadDownloadCallable implements Callable<AppTelecomLink> {
         long fileSize = mtd.download(maxFileSize);
         boolean isLimit = mtd.getIsLimit();
         boolean isDown = mtd.getIsDown();
-         AppTelecomLink appTelecomLink = null;
          long endTime = System.currentTimeMillis();
 
         if (isDown || isLimit) {

@@ -125,7 +125,7 @@ file:
     ####存放电信推送电信诈骗url文件地址
     urlPath: d:\apk\url
     ####支持每批次最多几个线程下载
-    maxThread: 8
+    maxThread: 10
     ####支持下载的最大文件限制
     maxFileSize: 104857600
     ####app 下载保存的路径
@@ -143,7 +143,7 @@ file:
     ####是否启用FTP 下载(1开启，0：关闭）
     isFtpDownload: 0
     ####是否开启过滤文件保存(1开启，0：关闭）
-    isSaveFileFilter: 1
+    isSaveFileFilter: 0
     ####是否开启脱壳(1开启，0：关闭）
     isDump: 0
 
@@ -156,10 +156,10 @@ file:
     filter:
       ####广告点击数（开始结束）
       adStart: 0
-      adEnd: 2
+      adEnd: 4
       ####访问数（开始，结束）
       visitStartNum: 0
-      visitEndNum: 2
+      visitEndNum: 4
       ####过滤文件保存路径
       filterPath: d:\apk\filter\
     ####增加FTP配置信息
@@ -217,7 +217,7 @@ appDynamic:
   #####动态分析下载目录
   apkDynamicLogPath: d:\apk\apklog\
   ####是否开启虚拟路径（1：开启，0：禁用）
-  isVirtualPath: 1
+  isVirtualPath: 0
   ####虚拟路径
   virtualPath: http://192.168.0.109:8081/
 ###app脱壳

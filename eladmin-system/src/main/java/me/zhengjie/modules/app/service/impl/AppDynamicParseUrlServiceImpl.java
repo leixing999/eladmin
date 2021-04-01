@@ -49,7 +49,12 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 			AppDynamicParseUrl appDynamicParseUrl = new AppDynamicParseUrl();
 			appDynamicParseUrl.setId(UUID.randomUUID().toString());
 			appDynamicParseUrl.setAppId(appDynamicResult.getAppId());
-			appDynamicParseUrl.setUrl(urlIterator.next());
+			String url = urlIterator.next();
+			if(url.lastIndexOf(":")>0){
+				appDynamicParseUrl.setUrl(url.substring(0,url.lastIndexOf(":")));
+			}else {
+				appDynamicParseUrl.setUrl(urlIterator.next());
+			}
 			appDynamicParseUrl.setType(1);
 			appDynamicParseUrl.setChannel(channel);
 			appUrlList.add(appDynamicParseUrl);
