@@ -4,9 +4,9 @@ spring:
     druid:
       db-type: com.alibaba.druid.pool.DruidDataSource
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      url: jdbc:log4jdbc:mysql://${DB_HOST:39.99.185.7}:${DB_PORT:3305}/${DB_NAME:eladmin}?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
-      username: ${DB_USER:dbuser}
-      password: ${DB_PWD:123456}
+      url: jdbc:log4jdbc:mysql://127.0.0.1:3306/eladmin?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+      username: root
+      password: root1234
       # 初始连接数
       initial-size: 5
       # 最小连接数
@@ -123,9 +123,9 @@ file:
     ####白名单APK存放地址
     path: /home/app/white
     ####存放电信推送电信诈骗url文件地址
-    urlPath: /home/app/url
+    urlPath: /data/apk_data
     ####支持每批次最多几个线程下载
-    maxThread: 8
+    maxThread: 10
     ####支持下载的最大文件限制
     maxFileSize: 104857600
     ####app 下载保存的路径
@@ -135,11 +135,11 @@ file:
     ####是否开启白名单(1开启，0：关闭）
     isWhitelist: 1
     ###是否开启静态分析(1开启，0：关闭）
-    isStatic: 0
+    isStatic: 1
     ####是否开启解析URL(1开启，0：关闭）
-    isParse: 0
+    isParse: 1
     ####是否开启扫描文件夹(1开启，0：关闭）
-    isSearch: 0
+    isSearch: 1
     ####是否启用FTP 下载(1开启，0：关闭）
     isFtpDownload: 0
     ####是否开启过滤文件保存(1开启，0：关闭）
@@ -156,10 +156,10 @@ file:
     filter:
       ####广告点击数（开始结束）
       adStart: 0
-      adEnd: 2
+      adEnd: 4
       ####访问数（开始，结束）
       visitStartNum: 0
-      visitEndNum: 2
+      visitEndNum: 4
       ####过滤文件保存路径
       filterPath: /home/app/filter/
     ####增加FTP配置信息
@@ -167,13 +167,13 @@ file:
       #####虚拟机下载FTP配置信息
       virtualMachineDownload:
         ###IP
-        ip: 192.168.0.101
+        ip: 192.168.227.128
         ###端口
         port: 21
         ###用户名
-        user: shxp2
+        user: shgb
         ###密码
-        password: shxp2
+        password: shgb
         ###请求路径
         dir: /log
       ####下载配置信息
@@ -205,9 +205,9 @@ file:
 #####虚拟机配置环境
 appVirtualMachine:
   ####appium请求网关地址
-  appiumUrl: http://192.168.0.101:4723/wd/hub
+  appiumUrl: http://192.168.227.128:4723/wd/hub
   ####app 模拟器地址
-  appVirtualMachineUrl: 192.168.0.101:5555
+  appVirtualMachineUrl: 192.168.227.128:5555
 ####动态分析日志文件
 appDynamic:
   ####动态分析请求日志文件路径
@@ -219,7 +219,7 @@ appDynamic:
   ####是否开启虚拟路径（1：开启，0：禁用）
   isVirtualPath: 1
   ####虚拟路径
-  virtualPath: http://192.168.0.109:8081/
+  virtualPath: http://192.168.19.70:8080/
 ###app脱壳
 appDumpAnalyse:
   ###apk脱壳执行命令

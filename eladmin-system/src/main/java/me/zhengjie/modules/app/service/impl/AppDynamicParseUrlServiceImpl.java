@@ -53,7 +53,7 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 			if(url.lastIndexOf(":")>0){
 				appDynamicParseUrl.setUrl(url.substring(0,url.lastIndexOf(":")));
 			}else {
-				appDynamicParseUrl.setUrl(urlIterator.next());
+				appDynamicParseUrl.setUrl(url);
 			}
 			appDynamicParseUrl.setType(1);
 			appDynamicParseUrl.setChannel(channel);

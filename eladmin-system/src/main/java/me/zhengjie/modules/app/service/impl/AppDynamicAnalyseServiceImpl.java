@@ -219,16 +219,23 @@ public class AppDynamicAnalyseServiceImpl implements AppDynamicAnalyseService {
         Iterator<String> iterator = hashSet.iterator();
         AppDynamicResult appDynamicResult = new AppDynamicResult();
         while (iterator.hasNext()) {
+            String record = "";
             try {
-                String record = iterator.next().trim();
-
+                 record = iterator.next().trim();
                 JSONObject objJson = JSONObject.parseObject(record);
                 this.analysisJson(objJson, appDynamicResult);
 
             } catch (Exception ex) {
-                System.out.println(ex);
-            }
+                //判断是否是url域名
+//                String patternWebSites = "(http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?";
+//                String url = this.getDomain(record);
+//                if (Pattern.matches(patternWebSites, record) || (url != null && url.length() > 0)) {
+//                    url = this.getDomain(record);
+//                    if (url != null && url.length() > 0)
+//                        appDynamicResult.getAppUrlSet().add(url);
+//                }
 
+            }
         }
 
         return appDynamicResult;

@@ -145,6 +145,12 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 				else if (appDictService.appDictFilter(1,appTelecomLink.getAppApplicationName()).size()>0){
 					appTelecomLink.setAppType(1);
 				}
+				//判断app是否已经存在了
+				else if(appTelecomLinkRepository.findByAppApplicationNameAndAppPackageName(
+						appTelecomLink.getAppApplicationName(),
+						appTelecomLink.getAppPackageName()).size()>0){
+					appTelecomLink.setAppType(4);
+				}
 				//是否开启权限操作
 				if(isPermission==1) {
 					//获取APP权限列表

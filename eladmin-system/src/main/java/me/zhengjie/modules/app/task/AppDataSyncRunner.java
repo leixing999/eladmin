@@ -7,9 +7,11 @@ import me.zhengjie.modules.app.domain.po.AppDynamicParseUrl;
 import me.zhengjie.modules.app.domain.po.AppTelecomLink;
 import me.zhengjie.modules.app.repository.AppDynamicParseUrlRepository;
 import me.zhengjie.modules.app.repository.AppTelecomLinkRepository;
+import me.zhengjie.modules.app.service.AppDictService;
 import me.zhengjie.modules.test.service.ITestService;
 import me.zhengjie.utils.DateUtil;
 import me.zhengjie.utils.FTPUtil;
+import me.zhengjie.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -31,6 +33,8 @@ import static java.util.stream.Collectors.toCollection;
 @Component
 @Order(1)
 public class AppDataSyncRunner implements ApplicationRunner {
+    @Autowired
+    AppDictService appDictService;
     @Autowired
     AppTelecomLinkRepository appTelecomLinkRepository;
     @Autowired
@@ -68,6 +72,10 @@ public class AppDataSyncRunner implements ApplicationRunner {
     @Value("${appDynamic.apkDynamicLogPath}")
     String apkDynamicLogPath;
 
+    //app 下载保存的路径
+    @Value("${file.apk.appSavePath}")
+    String  appSavePath;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if(isSync==1) {
@@ -98,21 +106,23 @@ public class AppDataSyncRunner implements ApplicationRunner {
             try {
                 for (AppTelecomLink appTelecomLink : list) {
                     //组合出下载app地址信息
-                    String appDownloadUrl = virtualPath + appTelecomLink.getAppSysRelativePath() + File.separator + appTelecomLink.getAppSysFileName();
+                    String appDownloadUrl = appSavePath + appTelecomLink.getAppSysRelativePath() + File.separator + appTelecomLink.getAppSysFileName();
                    //组合写入到csv文件中的值
                     writer.write(new String[]{
+                            appTelecomLink.getId(),
                             appTelecomLink.getAppApplicationName(),
-                            appTelecomLink.getAppPackageName(),
-                            appTelecomLink.getAppClassName(),
                             DateUtil.getDefaultDateStr("yyyy-MM-dd HH:mm:ss",appTelecomLink.getAppAddTime()),
-                            appDownloadUrl,
-                            this.getAppDomains(appTelecomLink.getId())});
+                            this.getAppDomains(appTelecomLink.getId()),
+
+                            appDownloadUrl
+                        });
                 }
                 writer.flush();
-                List fileList = new ArrayList();
-                fileList.add(new File(csvPath));
-                //上传FTP指定目录上
-                new FTPUtil(ip, port, user, password).uploadFile(fileList, dir);
+                writer.close();
+//                List fileList = new ArrayList();
+//                fileList.add(new File(csvPath));
+//                //上传FTP指定目录上
+//                new FTPUtil(ip, port, user, password).uploadFile(fileList, dir);
 
                 //更新状态
                 for (AppTelecomLink appTelecomLink : list) {
@@ -124,9 +134,6 @@ public class AppDataSyncRunner implements ApplicationRunner {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                // 关闭writer，释放内存
-                writer.close();
             }
         }
     }
@@ -151,7 +158,7 @@ public class AppDataSyncRunner implements ApplicationRunner {
     }
 
     /****
-     * 对结果进行处理
+     * 对域名结果进行处理
      * @param list
      * @return
      */
@@ -160,9 +167,31 @@ public class AppDataSyncRunner implements ApplicationRunner {
         for(AppDynamicParseUrl parseUrl : list){
             String url = parseUrl.getUrl();
             if(url.lastIndexOf(":")>0){
-                parseUrl.setUrl(url.substring(0,url.lastIndexOf(":")));
+                url = url.substring(0,url.lastIndexOf(":"));
+
             }
-            deleayList.add(parseUrl);
+            if(StringUtils.isIP(url)){
+                parseUrl.setUrl(url);
+            }else{
+                String [] urlSplits  =url.split("\\.");
+                int urlLens = urlSplits.length;
+                try{
+                    if(urlLens>=4) {
+                        url = "www." + urlSplits[urlLens - 3]  + urlSplits[urlLens - 2]+ "." + urlSplits[urlLens - 1];
+                    } if(urlLens==3){
+                        url = "www." + urlSplits[urlLens - 2] + "." + urlSplits[urlLens - 1];
+                    }
+                }catch(Exception ex){
+                    System.out.println(ex);
+                }
+                parseUrl.setUrl(url);
+            }
+
+            //判断url是否存在白名单里
+            if(appDictService.appDictFilter(2,parseUrl.getUrl()).size()==0){
+                deleayList.add(parseUrl);
+            }
+
         }
         return deleayList;
 

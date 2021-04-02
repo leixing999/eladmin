@@ -24,6 +24,14 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
      */
     List<AppTelecomLink> findAppTelecomLinkByAppFileName(String appFileName);
 
+    /***
+     * 通过应用名和类型判断是否存在过
+     * @param appName
+     * @param packageName
+     * @return
+     */
+    List<AppTelecomLink> findByAppApplicationNameAndAppPackageName(String appName,String packageName);
+
     /*****
      * 搜索没有静态分析的APP
      * @param isAnalyse

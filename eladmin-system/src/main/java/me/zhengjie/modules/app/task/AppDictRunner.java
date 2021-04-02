@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @date 2021-02-28
  */
 @Component
-@Order(1)
+@Order(0)
 public class AppDictRunner implements ApplicationRunner {
     @Autowired
     AppDictService appDictService;

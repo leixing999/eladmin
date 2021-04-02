@@ -41,7 +41,10 @@ public class UrlPathService {
 
     public List<UrlPathVO>parseApkUrlPath(String apkFilePath){
         List<String> list = FileUtil.getFileRecords(apkFilePath);
+        System.out.println("list_________________________"+list.size());
         List<UrlPathVO> urlPathVOList = this.parseApkUrlPath(list);
+        System.out.println("urlPathVOList_________________________"+urlPathVOList.size());
+
         return urlPathVOList;
     }
 
@@ -60,32 +63,37 @@ public class UrlPathService {
             //解析url进行分割
             String [] urlSplit = orignUrlPath.split("\\t");
             if(urlSplit.length==3){
-                String decodeUrlPath = URLDecoderString(ConverPercent.convertPercent(urlSplit[0]));
-                boolean isApk = decodeUrlPath.lastIndexOf(".apk")>0 ? true: false;
-                String requestUrlPath = isApk ? getRequestUrlPath(decodeUrlPath) : "";
-                String apkFileName = isApk ? getApkFileName(requestUrlPath) : "";
-                pathVO.setOrignUrlPath(urlSplit[0]);
-                pathVO.setDecodeUrlPath(decodeUrlPath);
-                pathVO.setRequestApkUrlPath(requestUrlPath);
-                pathVO.setApk(isApk);
-                pathVO.setApkFileName(apkFileName);
+                try {
+                    String decodeUrlPath = URLDecoderString(ConverPercent.convertPercent(urlSplit[0]));
+                    boolean isApk = decodeUrlPath.lastIndexOf(".apk") > 0 ? true : false;
+                    String requestUrlPath = isApk ? getRequestUrlPath(decodeUrlPath) : "";
+                    String apkFileName = isApk ? getApkFileName(requestUrlPath) : "";
+                    pathVO.setOrignUrlPath(urlSplit[0]);
+                    pathVO.setDecodeUrlPath(decodeUrlPath);
+                    pathVO.setRequestApkUrlPath(requestUrlPath);
+                    pathVO.setApk(isApk);
+                    pathVO.setApkFileName(apkFileName);
 
-                pathVO.setAdNum(Long.parseLong(urlSplit[1]));
-                pathVO.setVisitNum(Long.parseLong(urlSplit[2]));
+                    pathVO.setAdNum(Long.parseLong(urlSplit[1]));
+                    pathVO.setVisitNum(Long.parseLong(urlSplit[2]));
 
-                //判断是否满足过滤条件，不满足添加进去
-                if((pathVO.getVisitNum()>visitStartNum && pathVO.getVisitNum()<=visitEndNum)
-                        &&(pathVO.getAdNum()>adStart && pathVO.getAdNum()<=adEnd)){
-                    //去掉干扰信息过滤
-                    if(appDictService.appDictFilter(0,requestUrlPath).size()==0){
-                        urlPathVOList.add(pathVO);
+                    //判断是否满足过滤条件，不满足添加进去
+                    if ((pathVO.getVisitNum() > visitStartNum && pathVO.getVisitNum() <= visitEndNum)
+                            && (pathVO.getAdNum() > adStart && pathVO.getAdNum() <= adEnd)) {
+                        //去掉干扰信息过滤
+                        if (appDictService.appDictFilter(0, requestUrlPath).size() == 0) {
+                            urlPathVOList.add(pathVO);
+                        }
                     }
+                }catch(Exception ex){
+                    System.out.println(ex);
                 }
 //                urlPathVOList.add(pathVO);
 
             }
         }
 
+        System.out.println("urlPathVOList+++++-------------------------"+urlPathVOList.size());
         //去掉重复记录按照apk下载地址
         return urlPathVOList.stream().collect(
                 collectingAndThen(

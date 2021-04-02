@@ -78,6 +78,25 @@ public class AppDynamicServiceImpl implements AppDynamicService {
     }
 
     /***
+     * 删除本地日志文件
+     */
+    private void deleteLocalApkDynamicLog(){
+        try{
+            File resFile = new File(responsePath);
+            if(resFile.exists()){
+                resFile.delete();
+            }
+
+            File reqFile = new File(requestPath);
+            if(reqFile.exists()){
+                reqFile.delete();
+            }
+        }catch (Exception ex){
+            System.out.println(ex);
+        }
+    }
+
+    /***
      * 下载apk动态生成的日志文件
      */
     private void downloadRemoteApkDynamicLog(){
@@ -166,17 +185,19 @@ public class AppDynamicServiceImpl implements AppDynamicService {
                 try {
                     //清空动态解析APP日志文件（1）
                     this.deleteRemoteApkDynamicLog();
+                    this.deleteLocalApkDynamicLog();
 
                     String sysRelativeFilePath = appLink.getAppSysRelativePath()+ File.separator+appLink.getAppSysFileName();
                     //安装APP（2）
                     this.installApp(sysRelativeFilePath, appiumUrl, virtualMachineUrl);
-                    Thread.sleep(30000);
-                    //获取动态解析APP日志文件(3)
-                    this.downloadRemoteApkDynamicLog();
-                    //动态解析APP（4）
-                    appDynamicParseUrlService.saveAppDynamicAnylasisResult(responsePath,requestPath,appLink.getId());
-                    //卸载APP(5)
+                    Thread.sleep(10000);
+                    //卸载APP(3)
                     this.uninstallApp(appLink.getAppPackageName(), appiumUrl, virtualMachineUrl);
+                    //获取动态解析APP日志文件(4)
+                    this.downloadRemoteApkDynamicLog();
+                    //动态解析APP（5）
+                    appDynamicParseUrlService.saveAppDynamicAnylasisResult(responsePath,requestPath,appLink.getId());
+
                 }catch (Exception ex){
                     System.out.println(ex);
                     isDynamic = -1;

@@ -200,7 +200,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
     private void delayAppThreadDownloadResult(List<Future<AppTelecomLink>> futureList){
         for(Future<AppTelecomLink> appTelecomLinkFuture : futureList){
             try {
-                AppTelecomLink appTelecomLink = appTelecomLinkFuture.get(60, TimeUnit.SECONDS);
+                AppTelecomLink appTelecomLink = appTelecomLinkFuture.get();
                 if(appTelecomLink!=null){
                     appTelecomLink.setAppIsAnalyse(0);
                     appTelecomLink.setAppType(0);
