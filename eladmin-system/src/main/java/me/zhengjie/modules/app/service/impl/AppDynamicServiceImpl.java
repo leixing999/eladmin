@@ -123,12 +123,13 @@ public class AppDynamicServiceImpl implements AppDynamicService {
      * @param virtualMachineUrl 模拟器地址
      */
     @Override
-    public void installApp(String appPath,String appiumUrl,String virtualMachineUrl) {
+    public int installApp(String appPath,String appiumUrl,String virtualMachineUrl) {
         AppiumDriver driver;
         DesiredCapabilities cap = new DesiredCapabilities();
         cap.setCapability(CapabilityType.BROWSER_NAME, "");
         cap.setCapability("platformName", "Android"); //指定测试平台
         cap.setCapability("deviceName", virtualMachineUrl);
+        int isDynamic = 1;
 
         try {
             if(isVirtualPath==1) {
@@ -142,7 +143,9 @@ public class AppDynamicServiceImpl implements AppDynamicService {
 
         }catch(Exception ex){
             System.out.println(ex);
+            isDynamic = -1;
         }
+        return isDynamic;
     }
 
     /****
@@ -189,8 +192,8 @@ public class AppDynamicServiceImpl implements AppDynamicService {
 
                     String sysRelativeFilePath = appLink.getAppSysRelativePath()+ File.separator+appLink.getAppSysFileName();
                     //安装APP（2）
-                    this.installApp(sysRelativeFilePath, appiumUrl, virtualMachineUrl);
-                    Thread.sleep(10000);
+                    isDynamic = this.installApp(sysRelativeFilePath, appiumUrl, virtualMachineUrl);
+                    Thread.sleep(20000);
                     //卸载APP(3)
                     this.uninstallApp(appLink.getAppPackageName(), appiumUrl, virtualMachineUrl);
                     //获取动态解析APP日志文件(4)

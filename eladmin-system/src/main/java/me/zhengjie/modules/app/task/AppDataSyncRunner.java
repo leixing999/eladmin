@@ -1,10 +1,12 @@
 package me.zhengjie.modules.app.task;
 
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.text.csv.CsvUtil;
 import cn.hutool.core.text.csv.CsvWriter;
 import cn.hutool.core.util.CharsetUtil;
 import me.zhengjie.modules.app.domain.po.AppDynamicParseUrl;
 import me.zhengjie.modules.app.domain.po.AppTelecomLink;
+import me.zhengjie.modules.app.domain.vo.UrlPathVO;
 import me.zhengjie.modules.app.repository.AppDynamicParseUrlRepository;
 import me.zhengjie.modules.app.repository.AppTelecomLinkRepository;
 import me.zhengjie.modules.app.service.AppDictService;
@@ -20,6 +22,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.*;
 
 import static java.util.stream.Collectors.collectingAndThen;
@@ -81,6 +85,7 @@ public class AppDataSyncRunner implements ApplicationRunner {
         if(isSync==1) {
             while (true) {
                 try {
+                    //copyQuesttionApp();
                     uploadToClient();
                     Thread.sleep(1000000);
                 } catch (Exception ex) {
@@ -91,31 +96,52 @@ public class AppDataSyncRunner implements ApplicationRunner {
 
     }
 
+    /****
+     * 将问题app处理
+     */
+    private void copyQuesttionApp(){
+        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(1,1,-1,0);
+        for(AppTelecomLink appTelecomLink : list){
+           String   appDownloadUrl = appSavePath + appTelecomLink.getAppSysRelativePath() + File.separator + appTelecomLink.getAppSysFileName();
+           String   appSaveTarget = appSavePath +File.separator +"question/"+ appTelecomLink.getAppSysFileName();
+           try {
+               IoUtil.copy(new FileInputStream(new File(appDownloadUrl)), new FileOutputStream(new File(appSaveTarget)));
+           }catch (Exception ex){
+               System.out.println(ex);
+           }
+        }
+    }
     /***
      * 上传到客户端
      */
     private void uploadToClient(){
-        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(1,1,1,0);
-
-
+        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(1,1,-1,0);
+        //去重
+        List<AppTelecomLink>  nopeatList= list.stream().collect(
+                collectingAndThen(
+                        toCollection(() -> new TreeSet<>(Comparator.comparing(AppTelecomLink::getAppApplicationName))), ArrayList::new)
+        );
         //判断是否存在可上传的文件
-        if(list.size()>0) {
+        if(nopeatList.size()>0) {
             String csvPath = tempDir + File.separator + UUID.randomUUID() + ".csv";
             // 通过工具类创建writer，默认创建xls格式
             CsvWriter writer = CsvUtil.getWriter(csvPath, CharsetUtil.CHARSET_GBK);
             try {
-                for (AppTelecomLink appTelecomLink : list) {
+                for (AppTelecomLink appTelecomLink : nopeatList) {
                     //组合出下载app地址信息
                     String appDownloadUrl = appSavePath + appTelecomLink.getAppSysRelativePath() + File.separator + appTelecomLink.getAppSysFileName();
+                    String domainUrl =   this.getAppDomains(appTelecomLink.getId());
                    //组合写入到csv文件中的值
-                    writer.write(new String[]{
-                            appTelecomLink.getId(),
-                            appTelecomLink.getAppApplicationName(),
-                            DateUtil.getDefaultDateStr("yyyy-MM-dd HH:mm:ss",appTelecomLink.getAppAddTime()),
-                            this.getAppDomains(appTelecomLink.getId()),
+                    if(domainUrl!=null && domainUrl.length()>0) {
+                        writer.write(new String[]{
+                                appTelecomLink.getId(),
+                                appTelecomLink.getAppApplicationName(),
+                                DateUtil.getDefaultDateStr("yyyy-MM-dd HH:mm:ss", appTelecomLink.getAppAddTime()),
+                                domainUrl,
 
-                            appDownloadUrl
+                                appDownloadUrl
                         });
+                    }
                 }
                 writer.flush();
                 writer.close();

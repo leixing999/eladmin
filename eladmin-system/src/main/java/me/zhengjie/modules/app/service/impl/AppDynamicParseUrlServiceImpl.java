@@ -85,15 +85,15 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 		}
 
 		//解析App 动态敏感词
-		urlIterator = appDynamicResult.getAppSensiveSet().iterator();
-		while (urlIterator.hasNext()){
-			AppDynamicParseWord appDynamicParseWord = new AppDynamicParseWord();
-			appDynamicParseWord.setId(UUID.randomUUID().toString());
-			appDynamicParseWord.setAppId(appDynamicResult.getAppId());
-			appDynamicParseWord.setChannel(channel);
-			appDynamicParseWord.setContent(urlIterator.next());
-			appWordList.add(appDynamicParseWord);
-		}
+//		urlIterator = appDynamicResult.getAppSensiveSet().iterator();
+//		while (urlIterator.hasNext()){
+//			AppDynamicParseWord appDynamicParseWord = new AppDynamicParseWord();
+//			appDynamicParseWord.setId(UUID.randomUUID().toString());
+//			appDynamicParseWord.setAppId(appDynamicResult.getAppId());
+//			appDynamicParseWord.setChannel(channel);
+//			appDynamicParseWord.setContent(urlIterator.next());
+//			appWordList.add(appDynamicParseWord);
+//		}
 		//批量保存APP请求的URL
 		for(AppDynamicParseUrl appDynamicParseUrl : appUrlList){
 			try{
@@ -104,13 +104,13 @@ public class AppDynamicParseUrlServiceImpl implements AppDynamicParseUrlService 
 			}
 		}
 		//批量保存APP动态解析敏感词
-		for(AppDynamicParseWord appDynamicParseWord : appWordList) {
-			try {
-				appDynamicParseWordRepository.save(appDynamicParseWord);
-			} catch (Exception ex) {
-				System.out.println("保存APP请求的敏感词" + ex);
-			}
-		}
+//		for(AppDynamicParseWord appDynamicParseWord : appWordList) {
+//			try {
+//				appDynamicParseWordRepository.save(appDynamicParseWord);
+//			} catch (Exception ex) {
+//				System.out.println("保存APP请求的敏感词" + ex);
+//			}
+//		}
 
 	}
 	/****

@@ -7,7 +7,7 @@ public interface AppDynamicService {
      * @param appiumUrl appium网关地址
      * @param virtualMachineUrl 模拟器地址
      */
-    void installApp(String appPath,String appiumUrl,String virtualMachineUrl);
+    int installApp(String appPath,String appiumUrl,String virtualMachineUrl);
 
     /****
      * 卸载App

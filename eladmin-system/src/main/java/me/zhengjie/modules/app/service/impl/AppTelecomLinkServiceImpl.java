@@ -146,7 +146,7 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 					appTelecomLink.setAppType(1);
 				}
 				//判断app是否已经存在了
-				else if(appTelecomLinkRepository.findByAppApplicationNameAndAppPackageName(
+			  if(appTelecomLinkRepository.findByAppApplicationNameAndAppPackageName(
 						appTelecomLink.getAppApplicationName(),
 						appTelecomLink.getAppPackageName()).size()>0){
 					appTelecomLink.setAppType(4);
