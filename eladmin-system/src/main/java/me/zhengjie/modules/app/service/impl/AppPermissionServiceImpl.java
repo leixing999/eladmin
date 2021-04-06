@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * AppPermission 自定义Service实现层
@@ -32,5 +34,20 @@ public class AppPermissionServiceImpl implements AppPermissionService {
 	@Override
 	public void saveBatchAppPermission(List<AppPermission> list) {
 		appPermissionRepository.saveAll(list);
+	}
+
+	@Override
+	public void saveBatchAppPermission(String appId, List<String> list) {
+		//获取APP权限列表
+		List<AppPermission> permissionList = new ArrayList<>();
+		for (String permission : list) {
+			AppPermission appPermission = new AppPermission();
+			appPermission.setId(UUID.randomUUID().toString());
+			appPermission.setAppLinkId(appId);
+			appPermission.setAppPermissionName(permission);
+			permissionList.add(appPermission);
+		}
+		//批量保存APP权限信息
+		this.saveBatchAppPermission(permissionList);
 	}
 }

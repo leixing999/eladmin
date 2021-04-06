@@ -1,12 +1,16 @@
 package me.zhengjie.modules.app.service.impl;
 
 import me.zhengjie.domain.ApkInfo;
+import me.zhengjie.modules.app.domain.po.AppDict;
 import me.zhengjie.modules.app.domain.po.AppPermission;
 import me.zhengjie.modules.app.domain.po.AppTelecomLink;
+import me.zhengjie.modules.app.domain.po.AppTelecomLinkRelDict;
+import me.zhengjie.modules.app.repository.AppTelecomLinkRelDictRepository;
 import me.zhengjie.modules.app.repository.AppTelecomLinkRepository;
 import me.zhengjie.modules.app.repository.AppTelecomWhitelistRepository;
 import me.zhengjie.modules.app.service.AppDictService;
 import me.zhengjie.modules.app.service.AppPermissionService;
+import me.zhengjie.modules.app.service.AppTelecomLinkRelDictService;
 import me.zhengjie.modules.app.service.AppTelecomLinkService;
 import me.zhengjie.utils.ApkUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +38,8 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 	private final AppDictService appDictService;
 	private final AppPermissionService appPermissionService;
 	private final AppTelecomWhitelistRepository appTelecomWhitelistRepository;
+
+	private final AppTelecomLinkRelDictService appTelecomLinkRelDictService;
 	/***aapt路径***/
 	@Value("${file.aapt.path}")
 	String aaptPath;
@@ -134,6 +140,9 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 				appTelecomLink.setAppPackageName(apkInfo.getPackageName());
 				appTelecomLink.setAppVersion("");
 				appTelecomLink.setAppType(2);
+
+				//跟涉及敏感词关联的关键词信息
+				List<AppDict> keyWordList = appDictService.appDictFilter(1,appTelecomLink.getAppApplicationName());
 				//判断APP是否在白名单里
 				if(appTelecomWhitelistRepository.findByAppApplicationNameAndAppPackageName(
 						appTelecomLink.getAppApplicationName(),
@@ -142,28 +151,23 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 
 				}
 				//判断是否在黑名单里
-				else if (appDictService.appDictFilter(1,appTelecomLink.getAppApplicationName()).size()>0){
+				else if (keyWordList.size()>0){
 					appTelecomLink.setAppType(1);
+					//添加关联黑名单信息
+					appTelecomLinkRelDictService.saveAppRelDict(appTelecomLink.getId(),keyWordList);
+
 				}
 				//判断app是否已经存在了
 			  if(appTelecomLinkRepository.findByAppApplicationNameAndAppPackageName(
 						appTelecomLink.getAppApplicationName(),
 						appTelecomLink.getAppPackageName()).size()>0){
 					appTelecomLink.setAppType(4);
+
 				}
 				//是否开启权限操作
 				if(isPermission==1) {
-					//获取APP权限列表
-					List<AppPermission> permissionList = new ArrayList<>();
-					for (String permission : apkInfo.getUsesPermissions()) {
-						AppPermission appPermission = new AppPermission();
-						appPermission.setId(UUID.randomUUID().toString());
-						appPermission.setAppLinkId(appTelecomLink.getId());
-						appPermission.setAppPermissionName(permission);
-						permissionList.add(appPermission);
-					}
 					//批量保存APP权限信息
-					appPermissionService.saveBatchAppPermission(permissionList);
+					appPermissionService.saveBatchAppPermission(appTelecomLink.getId(),apkInfo.getUsesPermissions());
 				}
 
 			}catch (Exception ex){

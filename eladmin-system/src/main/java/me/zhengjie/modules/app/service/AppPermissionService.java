@@ -15,6 +15,22 @@ import java.util.List;
  */
 public interface AppPermissionService {
 
+    /***
+     * 保存单条权限信息
+     * @param appPermission
+     */
     public void saveAppPermission(AppPermission appPermission);
+
+    /***
+     * 批量保存权限信息
+     * @param list
+     */
     public void saveBatchAppPermission(List<AppPermission> list);
+
+    /***
+     * 批量保存权限信息（重载）
+     * @param appId
+     * @param list
+     */
+    public void saveBatchAppPermission(String appId,List<String> list);
 }
