@@ -45,20 +45,23 @@ public class AppDumpAnalyse {
     }
     public static void main(String[] args) {
         // 在此目录中找文件
-        String baseDIR = "H:\\apkpath\\litetao_android_10002859\\";
+//        String baseDIR = "H:\\apkpath\\litetao_android_10002859\\";
+//
+//        // 找扩展名为txt的文件
+//        String fileName = "*.json";
+//
+//        List<String> list = new ArrayList<>();
+//        FileSearcher.findFiles(baseDIR, fileName,list);
+//
+//        AppDynamicAnalyseService appDynamicAnalyseService = new AppDynamicAnalyseServiceImpl();
+//        for(String path : list){
+//
+//            StringBuffer buffer = appDynamicAnalyseService.getAppDynamicParseLog(path,"utf-8");
+//            AppDynamicResult appDynamicResult = appDynamicAnalyseService.analysisJson(buffer);
+//            System.out.println(appDynamicResult.getAppUrlSet().size());
+//        }
 
-        // 找扩展名为txt的文件
-        String fileName = "*.json";
-
-        List<String> list = new ArrayList<>();
-        FileSearcher.findFiles(baseDIR, fileName,list);
-
-        AppDynamicAnalyseService appDynamicAnalyseService = new AppDynamicAnalyseServiceImpl();
-        for(String path : list){
-
-            StringBuffer buffer = appDynamicAnalyseService.getAppDynamicParseLog(path,"utf-8");
-            AppDynamicResult appDynamicResult = appDynamicAnalyseService.analysisJson(buffer);
-            System.out.println(appDynamicResult.getAppUrlSet().size());
-        }
+        String hello = "111111.com";
+        System.out.println(hello.indexOf("112"));
     }
 }

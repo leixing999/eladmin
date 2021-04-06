@@ -45,6 +45,6 @@ public class AppDictServiceImpl implements AppDictService {
 	@Override
 	public List<AppDict> appDictFilter(int type, String sensDict) {
 		List<AppDict> appDictByTypeList = this.getAppDictsByType(type);
-		return appDictByTypeList.stream().filter(s->sensDict.indexOf(s.getDictValue())>0).collect(Collectors.toList());
+		return appDictByTypeList.stream().filter(s->sensDict.indexOf(s.getDictValue())>=0).collect(Collectors.toList());
 	}
 }
