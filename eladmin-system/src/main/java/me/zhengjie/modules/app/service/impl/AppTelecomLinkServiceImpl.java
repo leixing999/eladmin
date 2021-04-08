@@ -13,6 +13,7 @@ import me.zhengjie.modules.app.service.AppPermissionService;
 import me.zhengjie.modules.app.service.AppTelecomLinkRelDictService;
 import me.zhengjie.modules.app.service.AppTelecomLinkService;
 import me.zhengjie.utils.ApkUtil;
+import me.zhengjie.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -148,6 +149,8 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 						appTelecomLink.getAppApplicationName(),
 						appTelecomLink.getAppPackageName()).size()>0){
 					appTelecomLink.setAppType(3);
+					//删除白名单APP文件信息
+					this.delApp(appPath);
 
 				}
 				//判断是否在黑名单里
@@ -177,6 +180,20 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 				appTelecomLinkRepository.updateAppLink(appTelecomLink);
 			}
 
+		}
+	}
+
+	/****
+	 * 按照APP路径删除指定APP文件
+	 * @param appPath
+	 */
+	@Override
+	public void delApp(String appPath) {
+
+		try{
+			FileUtil.del(appPath);
+		}catch(Exception ex){
+			System.out.println(ex);
 		}
 	}
 }

@@ -72,4 +72,10 @@ public interface AppTelecomLinkService {
      * 静态分析APP
      */
     void staticAnalyseApp();
+
+    /***
+     * 删除APP按照路径
+     * @param appPath
+     */
+    void delApp(String appPath);
 }
