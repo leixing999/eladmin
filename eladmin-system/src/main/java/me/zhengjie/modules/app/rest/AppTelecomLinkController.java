@@ -13,9 +13,12 @@ import me.zhengjie.modules.app.service.AppDynamicService;
 import me.zhengjie.modules.app.service.AppTelecomLinkService;
 import me.zhengjie.utils.ApkUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -69,5 +72,19 @@ public class AppTelecomLinkController {
             System.out.println(ex);
         }
 
+    }
+
+    @Log("修改App类型")
+    @ApiOperation("修改App类型")
+    @AnonymousPostMapping("/updateAppType")
+    public ResponseEntity<Object> updateAppType(@RequestParam String appId){
+
+        boolean isSuccess = true;
+        try {
+            isSuccess = appTelecomLinkService.updateAppType(appId,3);
+        }catch (Exception ex){
+            System.out.println(ex);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

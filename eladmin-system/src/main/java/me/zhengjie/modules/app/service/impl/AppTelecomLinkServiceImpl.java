@@ -1,10 +1,7 @@
 package me.zhengjie.modules.app.service.impl;
 
 import me.zhengjie.domain.ApkInfo;
-import me.zhengjie.modules.app.domain.po.AppDict;
-import me.zhengjie.modules.app.domain.po.AppPermission;
-import me.zhengjie.modules.app.domain.po.AppTelecomLink;
-import me.zhengjie.modules.app.domain.po.AppTelecomLinkRelDict;
+import me.zhengjie.modules.app.domain.po.*;
 import me.zhengjie.modules.app.repository.AppTelecomLinkRelDictRepository;
 import me.zhengjie.modules.app.repository.AppTelecomLinkRepository;
 import me.zhengjie.modules.app.repository.AppTelecomWhitelistRepository;
@@ -22,6 +19,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -195,5 +193,43 @@ public class AppTelecomLinkServiceImpl implements AppTelecomLinkService {
 		}catch(Exception ex){
 			System.out.println(ex);
 		}
+	}
+
+	/***
+	 * 修改APP类型
+	 * @param appId
+	 * @param appType
+	 * @return
+	 */
+	@Override
+	public boolean updateAppType(String appId, Integer appType) {
+		boolean isSuccess = true;
+		try{
+			appTelecomLinkRepository.updateAppType(appId,appType);
+			/***如果设置成白名单，则需要将App文件删除****/
+			if(appType==3){
+				AppTelecomLink appTelecomLink = this.getAppByAppId(appId);
+				String appPath = appSavePath+appTelecomLink.getAppSysRelativePath()+ File.separator+appTelecomLink.getAppSysFileName();
+				FileUtil.del(appPath);
+				AppTelecomWhitelist appTelecomWhitelist = new AppTelecomWhitelist();
+				appTelecomWhitelist.setStatus(1);
+				appTelecomWhitelist.setAppFilename(appTelecomLink.getAppFileName());
+				appTelecomWhitelist.setId(appTelecomLink.getId());
+				appTelecomWhitelist.setAppClassName(appTelecomLink.getAppClassName());
+				appTelecomWhitelist.setAppPackageName(appTelecomLink.getAppPackageName());
+				appTelecomWhitelist.setAppApplicationName(appTelecomLink.getAppApplicationName());
+				appTelecomWhitelistRepository.save(appTelecomWhitelist);
+			}
+
+		}catch(Exception ex){
+			isSuccess = false;
+		}
+		return isSuccess;
+	}
+
+	@Override
+	public AppTelecomLink getAppByAppId(String appId) {
+		Optional<AppTelecomLink> appTelecomLink = appTelecomLinkRepository.findById(appId);
+		return appTelecomLink.get();
 	}
 }

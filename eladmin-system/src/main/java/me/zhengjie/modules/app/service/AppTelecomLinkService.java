@@ -78,4 +78,19 @@ public interface AppTelecomLinkService {
      * @param appPath
      */
     void delApp(String appPath);
+
+    /****
+     * 修改指定APP类型
+     * @param appId
+     * @param appType
+     * @return
+     */
+    boolean updateAppType(String appId,Integer appType);
+
+    /***
+     * 获取指定APP信息
+     * @param appId
+     * @return
+     */
+    AppTelecomLink getAppByAppId(String appId);
 }

@@ -168,4 +168,17 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
     void updateAppTelecomLinkBySync(String id,Integer isDump);
 
 
+    /****
+     * 修改指定APP的类型
+     * @param id
+     * @param appType
+     */
+    @Modifying
+    @Transactional
+    @Query(value=" update app_telecom_link " +
+            " set " +
+            " app_type=?2 " +
+            " where  id=?1",nativeQuery = true)
+    void updateAppType(String id,Integer appType);
+
 }
