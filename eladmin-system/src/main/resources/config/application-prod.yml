@@ -151,7 +151,10 @@ file:
     isDynamicParse: 1
     ####是否同步分析结果给电信(1开启，0：关闭）
     isSync: 1
-
+    #####导出文件大小
+    exportFileSize: 31857600
+    #####导出分页大小
+    exportPageSize: 500
     #####url过滤机制
     filter:
       ####广告点击数（开始结束）

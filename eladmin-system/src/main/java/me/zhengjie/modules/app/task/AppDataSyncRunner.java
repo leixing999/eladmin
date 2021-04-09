@@ -81,6 +81,13 @@ public class AppDataSyncRunner {
     @Value("${file.apk.appSavePath}")
     String  appSavePath;
 
+    //app 导出文件大小
+    @Value("${file.apk.exportFileSize}")
+    long  exportFileSize;
+    //app 导出文件分页大小
+    @Value("${file.apk.exportPageSize}")
+    int  exportPageSize;
+
 
     public void run() throws Exception {
         if(isSync==1) {
@@ -100,16 +107,50 @@ public class AppDataSyncRunner {
     /****
      * 将问题app处理
      */
-    private void copyQuesttionApp(){
-        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(1,1,-1,0);
+    public void copyQuesttionApp(){
+        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsAnalyse(1,1,1);
         for(AppTelecomLink appTelecomLink : list){
            String   appDownloadUrl = appSavePath + appTelecomLink.getAppSysRelativePath() + File.separator + appTelecomLink.getAppSysFileName();
            String   appSaveTarget = appSavePath +File.separator +"question/"+ appTelecomLink.getAppSysFileName();
+            int index = 0;
            try {
-               IoUtil.copy(new FileInputStream(new File(appDownloadUrl)), new FileOutputStream(new File(appSaveTarget)));
+               if(index<exportPageSize) {
+                   if(appTelecomLink.getAppFileSize()<exportFileSize) {
+                       IoUtil.copy(new FileInputStream(new File(appDownloadUrl)), new FileOutputStream(new File(appSaveTarget)));
+                       index++;
+                   }
+               }else{
+                   break;
+               }
            }catch (Exception ex){
                System.out.println(ex);
            }
+        }
+    }
+
+    /****
+     * 将问题app处理
+     */
+    public void copyHsQuesttionApp(){
+        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsAnalyse(1,2,1);
+
+        int index = 0;
+        for(AppTelecomLink appTelecomLink : list){
+            String   appDownloadUrl = appSavePath + appTelecomLink.getAppSysRelativePath() + File.separator + appTelecomLink.getAppSysFileName();
+            String   appSaveTarget = appSavePath +File.separator +"hsquestion/"+ appTelecomLink.getAppSysFileName();
+            try {
+                if(index<exportPageSize) {
+                    if(appTelecomLink.getAppFileSize()<exportFileSize) {
+                        IoUtil.copy(new FileInputStream(new File(appDownloadUrl)), new FileOutputStream(new File(appSaveTarget)));
+                        index++;
+                    }
+                }else{
+                    break;
+                }
+
+            }catch (Exception ex){
+                System.out.println(ex);
+            }
         }
     }
     /***

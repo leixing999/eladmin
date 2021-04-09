@@ -145,12 +145,18 @@ file:
     ####是否开启过滤文件保存(1开启，0：关闭）
     isSaveFileFilter: 1
     ####是否开启脱壳(1开启，0：关闭）
-    isDump: 1
+    isDump: 0
 
     ####是否开启动态解析APK(1开启，0：关闭）
-    isDynamicParse: 1
+    isDynamicParse: 0
     ####是否同步分析结果给电信(1开启，0：关闭）
-    isSync: 1
+    isSync: 0
+
+    #####导出文件大小
+    exportFileSize: 31857600
+    #####导出分页大小
+    exportPageSize: 500
+
 
     #####url过滤机制
     filter:

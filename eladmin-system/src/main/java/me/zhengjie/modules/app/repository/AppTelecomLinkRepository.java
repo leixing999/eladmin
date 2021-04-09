@@ -66,6 +66,15 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
      * @return
      */
     List<AppTelecomLink> findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(int isDown,int appType,int isDynamic,int isSync);
+
+    /****
+     * 按照指定条件获取指定apk文件
+     * @param isDown
+     * @param appType
+     * @param isAnalyse
+     * @return
+     */
+    List<AppTelecomLink> findByAppIsDownAndAppTypeAndAppIsAnalyse(int isDown,int appType,int isAnalyse);
     /***
      * 搜索没有脱壳分析的APP
      * @param isDown
