@@ -129,7 +129,7 @@ file:
     ####支持下载的最大文件限制
     maxFileSize: 64857600
     ####app 下载保存的路径
-    appSavePath: /home/app/apkdownload/
+    appSavePath: /data/apkdownload/
     ####是否开启权限入库(1开启，0：关闭）
     isPermission: 0
     ####是否开启白名单(1开启，0：关闭）
@@ -143,14 +143,14 @@ file:
     ####是否启用FTP 下载(1开启，0：关闭）
     isFtpDownload: 0
     ####是否开启过滤文件保存(1开启，0：关闭）
-    isSaveFileFilter: 0
+    isSaveFileFilter: 1
     ####是否开启脱壳(1开启，0：关闭）
-    isDump: 0
+    isDump: 1
 
     ####是否开启动态解析APK(1开启，0：关闭）
-    isDynamicParse: 0
+    isDynamicParse: 1
     ####是否同步分析结果给电信(1开启，0：关闭）
-    isSync: 0
+    isSync: 1
 
     #####url过滤机制
     filter:
@@ -225,7 +225,7 @@ appDumpAnalyse:
   ###apk脱壳执行命令
   runCommand: '/home/app/jadx/bin/jadx -d '
   ###apk脱壳文件存放路径
-  appDumpPath: /home/app/apkdump
+  appDumpPath: /data/apkdump
 
   # 文件大小 /M
   maxSize: 100

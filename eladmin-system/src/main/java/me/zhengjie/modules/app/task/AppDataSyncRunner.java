@@ -20,6 +20,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,9 +35,9 @@ import static java.util.stream.Collectors.toCollection;
  * @author xinglei
  * @date 2021-02-28
  */
-@Component
-@Order(1)
-public class AppDataSyncRunner implements ApplicationRunner {
+@Service
+//@Order(1)
+public class AppDataSyncRunner {
     @Autowired
     AppDictService appDictService;
     @Autowired
@@ -80,14 +81,14 @@ public class AppDataSyncRunner implements ApplicationRunner {
     @Value("${file.apk.appSavePath}")
     String  appSavePath;
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
+
+    public void run() throws Exception {
         if(isSync==1) {
             while (true) {
                 try {
                     //copyQuesttionApp();
                     uploadToClient();
-                    Thread.sleep(1000000);
+                    Thread.sleep(10000);
                 } catch (Exception ex) {
                     System.out.println(ex);
                 }

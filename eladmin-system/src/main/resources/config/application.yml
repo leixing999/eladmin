@@ -1,11 +1,11 @@
 server:
-  port: 8800
+  port: 8000
 
 spring:
   freemarker:
     check-template-location: false
   profiles:
-    active: dev
+    active: prod
   jackson:
     time-zone: GMT+8
   data:

@@ -46,6 +46,9 @@ public class AppRunner implements ApplicationRunner {
 
     @Autowired
     AppService appService;
+
+    @Autowired
+    AppDataSyncRunner appDataSyncRunner;
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
@@ -149,6 +152,19 @@ public class AppRunner implements ApplicationRunner {
                         System.out.println(ex);
                     }
 
+                }
+            }
+        }.start();
+
+
+        //启动同步数据进程
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    appDataSyncRunner.run();
+                } catch (Exception ex) {
+                    System.out.println(ex);
                 }
             }
         }.start();
