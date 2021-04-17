@@ -25,7 +25,7 @@ public class CrawlerUtils {
     public  String downloadFileByWget(String displayName, String apkDownloadPath, String download_url,String sysFileName) {
 
         String fileName = download_url.substring(download_url.lastIndexOf("/")+1);
-        String dir = apkDownloadPath + DateUtil.simpleDateFormatyMdHms() + "/";
+        String dir = apkDownloadPath +  "/";
         File file = new File(dir);
         if(!file.exists()){
             file.mkdir();

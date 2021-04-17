@@ -135,15 +135,15 @@ file:
     ####是否开启白名单(1开启，0：关闭）
     isWhitelist: 0
     ###是否开启静态分析(1开启，0：关闭）
-    isStatic: 1
+    isStatic: 0
     ####是否开启解析URL(1开启，0：关闭）
     isParse: 1
     ####是否开启扫描文件夹(1开启，0：关闭）
-    isSearch: 1
+    isSearch: 0
     ####是否启用FTP 下载(1开启，0：关闭）
     isFtpDownload: 0
     ####是否开启过滤文件保存(1开启，0：关闭）
-    isSaveFileFilter: 1
+    isSaveFileFilter: 0
     ####是否开启脱壳(1开启，0：关闭）
     isDump: 0
 
@@ -158,8 +158,6 @@ file:
     exportPageSize: 500
     #####是否是linux平台
     isLinuxPlatom: false
-
-
     #####url过滤机制
     filter:
       ####广告点击数（开始结束）
