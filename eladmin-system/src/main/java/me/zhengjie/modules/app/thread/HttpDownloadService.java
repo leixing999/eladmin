@@ -115,6 +115,11 @@ public class HttpDownloadService {
         try{
             URL url = new URL(str_url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setDoOutput(false);// 使用 URL 连接进行输出
+            conn.setDoInput(true);// 使用 URL 连接进行输入
+            conn.setUseCaches(false);// 忽略缓存
+
             conn.setConnectTimeout(10000);
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-Length","8192");

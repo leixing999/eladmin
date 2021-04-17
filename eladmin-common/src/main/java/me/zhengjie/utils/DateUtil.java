@@ -32,6 +32,7 @@ public class DateUtil {
     public static final DateTimeFormatter DFY_MD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final String MD_STR = "yyyy-MM-dd";
     public static final String MD_HMS_STR = "yyyy-MM-dd HH:mm:ss";
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * LocalDateTime 转时间戳
@@ -204,6 +205,18 @@ public class DateUtil {
     public static String getDefaultDateStr(){
 
         return getDefaultDateStr(MD_STR);
+    }
+    /**
+     * 日期格式化 yyyy-MM-dd HH:mm:ss
+     *
+     * @param date /
+     * @return /
+     */
+    public static String simpleDateFormatyMdHms(Date date) {
+        return DATE_FORMAT.format(date);
+    }
+    public static String simpleDateFormatyMdHms(){
+        return simpleDateFormatyMdHms(new Date());
     }
 
 }
