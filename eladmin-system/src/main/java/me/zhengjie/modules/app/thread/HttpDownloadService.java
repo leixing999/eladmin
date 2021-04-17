@@ -1,5 +1,8 @@
 package me.zhengjie.modules.app.thread;
 
+import me.zhengjie.modules.app.domain.vo.AppFileVO;
+import me.zhengjie.utils.crawler.CrawlerUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +43,61 @@ public class HttpDownloadService {
         return isLimit;
     }
 
+
+    private AppFileVO downloadFileLimit(long maxFilesize){
+        /*
+         *  首先设置本地文件的大小
+         *  当然这是个null数据的文件
+         *  这样才能通过RandomAccessFile的数组下标机制达到随机位置写入
+         */
+        AppFileVO appFileVO = new AppFileVO();
+        try {
+            URL url = new URL(str_url);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setRequestMethod("GET");
+            long fileLength = conn.getContentLengthLong(); // 得到需要下载的文件大小
+            appFileVO.setFileSize(fileLength);
+            appFileVO.setSuccess(true);
+            conn.disconnect();
+            if (fileLength > maxFilesize) {
+                this.isLimit = true;
+                appFileVO.setSuccess(false);
+            }
+            if (fileLength < 10000) {
+                appFileVO.setSuccess(false);
+
+            }
+
+        }catch(IOException ex){
+            System.out.println(ex);
+            appFileVO.setSuccess(false);
+        }
+
+        return appFileVO;
+    }
+    /***
+     * wget方式下载
+     * @param maxFilesize
+     * @return
+     */
+    public long wgetDownload(long maxFilesize){
+        //获取文件是否超过限制
+        AppFileVO appFileVO = this.downloadFileLimit(maxFilesize);
+        if(appFileVO.isSuccess()==false){
+            return appFileVO.getFileSize();
+        }
+        CrawlerUtils crawlerUtils = new CrawlerUtils();
+       String filePath = crawlerUtils.downloadFileByWget(this.appSysFileName, this.storagePath, this.str_url,this.appSysFileName);
+
+       if(filePath==null){
+           return 0;
+       }else{
+           this.isDown = true;
+           return appFileVO.getFileSize();
+       }
+
+    }
     /***
      *
      * @param maxFileSize
@@ -51,29 +109,19 @@ public class HttpDownloadService {
         long startTime = System.currentTimeMillis();
         System.out.println("Download......");
 
-        /*
-         *  首先设置本地文件的大小
-         *  当然这是个null数据的文件
-         *  这样才能通过RandomAccessFile的数组下标机制达到随机位置写入
-         */
-        URL url = new URL(str_url);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(5000);
-        conn.setRequestMethod("GET");
-        long fileLength = conn.getContentLengthLong(); // 得到需要下载的文件大小
-        conn.disconnect();
-        if(fileLength>maxFileSize ){
-            this.isLimit = true;
-            return fileLength;
-        }
-        if( fileLength<10000){
-            return fileLength;
+        //获取文件是否超过限制
+        AppFileVO appFileVO = this.downloadFileLimit(maxFileSize);
+        if(appFileVO.isSuccess()==false){
+            return appFileVO.getFileSize();
         }
 
         File sysFileDir = new File(storagePath);
         if(sysFileDir.isDirectory()==false){
             sysFileDir.mkdir();
         }
+
+        long fileLength = appFileVO.getFileSize();
+
         RandomAccessFile file = new RandomAccessFile(storagePath+File.separator+this.appSysFileName, "rwd");
         file.setLength(fileLength); // 关键方法 ： 设置本地文件长度
         file.close();

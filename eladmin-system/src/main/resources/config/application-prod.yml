@@ -155,6 +155,9 @@ file:
     exportFileSize: 31857600
     #####导出分页大小
     exportPageSize: 500
+
+    #####是否是linux平台
+    isLinuxPlatom: true
     #####url过滤机制
     filter:
       ####广告点击数（开始结束）

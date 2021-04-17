@@ -8,22 +8,18 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-public class ThreadDownloadCallable implements Callable<AppTelecomLink> {
+public class WgetThreadDownloadCallable implements Callable<AppTelecomLink> {
     private UrlPathVO urlPathVO ;
     private String appSavePath;
     private String fileId;
     private long maxFileSize=0;
 
-    private boolean isLinuxPlatom ;
 
-
-
-    public ThreadDownloadCallable(UrlPathVO urlPathVO,String appSavePath,String fileId,long maxFileSize,boolean isLinuxPlatom){
+    public WgetThreadDownloadCallable(UrlPathVO urlPathVO, String appSavePath, String fileId, long maxFileSize){
         this.urlPathVO = urlPathVO;
         this.appSavePath = appSavePath;
         this.fileId = fileId;
         this.maxFileSize = maxFileSize;
-        this.isLinuxPlatom = isLinuxPlatom;
     }
 
     @Override
@@ -38,8 +34,7 @@ public class ThreadDownloadCallable implements Callable<AppTelecomLink> {
                 appSavePath + relativeFilePath,
                 1,appSysFileName);
 
-        //判断是否是linux平台
-        long fileSize = this.isLinuxPlatom ? mtd.wgetDownload(maxFileSize) : mtd.download(maxFileSize);
+        long fileSize = mtd.download(maxFileSize);
         boolean isLimit = mtd.getIsLimit();
         boolean isDown = mtd.getIsDown();
          long endTime = System.currentTimeMillis();

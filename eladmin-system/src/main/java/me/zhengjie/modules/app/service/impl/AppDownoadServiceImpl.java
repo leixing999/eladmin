@@ -51,6 +51,9 @@ public class AppDownoadServiceImpl implements AppDownloadService {
     @Value("${file.apk.filter.filterPath}")
     String  filterPath;
 
+    //过滤文件保存路径
+    @Value("${file.apk.isLinuxPlatom}")
+    boolean isLinuxPlatom;
 
     /*****
      * 扫描电信传递的可以诈骗APK下载地址文件
@@ -167,10 +170,10 @@ public class AppDownoadServiceImpl implements AppDownloadService {
      * @param maxFileSize
      * @return
      */
-    private List<ThreadDownloadCallable>createThreadDownloadCallable(List<UrlPathVO> urlPathVOList,String appSavePath,String fileId,long maxFileSize){
+    private List<ThreadDownloadCallable>createThreadDownloadCallable(List<UrlPathVO> urlPathVOList,String appSavePath,String fileId,long maxFileSize,boolean isLinuxPlatom){
       List<ThreadDownloadCallable>  threadCallableList = new ArrayList<>();
       for(UrlPathVO urlPathVO : urlPathVOList){
-          ThreadDownloadCallable threadCallable = new ThreadDownloadCallable(urlPathVO,appSavePath,fileId,maxFileSize);
+          ThreadDownloadCallable threadCallable = new ThreadDownloadCallable(urlPathVO,appSavePath,fileId,maxFileSize,isLinuxPlatom);
           threadCallableList.add(threadCallable);
       }
       return threadCallableList;
@@ -271,7 +274,7 @@ public class AppDownoadServiceImpl implements AppDownloadService {
             //去掉已经下载过得APP(3)
             pageList = this.delayFinishedDownloadUrlPath(pageList);
             //获取多线程下载队列（4)
-            List<ThreadDownloadCallable> threadCallableList = this.createThreadDownloadCallable(pageList,appSavePath, linkPackage.getId(), maxFileSize);
+            List<ThreadDownloadCallable> threadCallableList = this.createThreadDownloadCallable(pageList,appSavePath, linkPackage.getId(), maxFileSize,this.isLinuxPlatom);
             //执行多线程下载队列(5)
             List<Future<AppTelecomLink>> appLinkFutureList = this.executeDownloadThreads(threadCallableList,executor);
             //处理线程处理结果信息（6）
