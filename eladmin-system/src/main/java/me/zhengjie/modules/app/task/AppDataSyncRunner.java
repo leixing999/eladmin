@@ -157,15 +157,39 @@ public class AppDataSyncRunner {
      * 上传到客户端
      */
     private void uploadToClient(){
+        /********开始同步黑名单信息****************/
         List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(1,1,-1,0);
         //去重
         List<AppTelecomLink>  nopeatList= list.stream().collect(
                 collectingAndThen(
                         toCollection(() -> new TreeSet<>(Comparator.comparing(AppTelecomLink::getAppApplicationName))), ArrayList::new)
         );
+        //同步黑名单信息
+        createSyncData(list,nopeatList,1);
+        /********结束同步黑名单信息****************/
+
+        /********开始同步灰名单信息****************/
+        //获取机器不能处理APP信息
+        list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(1,2,0,0);
+        //去重
+        nopeatList= list.stream().collect(
+                collectingAndThen(
+                        toCollection(() -> new TreeSet<>(Comparator.comparing(AppTelecomLink::getAppApplicationName))), ArrayList::new)
+        );
+        createSyncData(list,nopeatList,2);
+        /********结束同步灰名单信息****************/
+    }
+
+
+    /***
+     * @param list 全部信息
+     * @param nopeatList
+     * @param syncDataType 1:黑名单，2：不能处理
+     */
+    private void createSyncData( List<AppTelecomLink> list ,List<AppTelecomLink> nopeatList,int syncDataType){
         //判断是否存在可上传的文件
         if(nopeatList.size()>0) {
-            String csvPath = tempDir + File.separator + UUID.randomUUID() + ".csv";
+            String csvPath = tempDir + File.separator + UUID.randomUUID()+"_"+syncDataType + ".csv";
             // 通过工具类创建writer，默认创建xls格式
             CsvWriter writer = CsvUtil.getWriter(csvPath, CharsetUtil.CHARSET_GBK);
             try {
@@ -173,16 +197,27 @@ public class AppDataSyncRunner {
                     //组合出下载app地址信息
                     String appDownloadUrl = appSavePath + appTelecomLink.getAppSysRelativePath() + File.separator + appTelecomLink.getAppSysFileName();
                     String domainUrl =   this.getAppDomains(appTelecomLink.getId());
-                   //组合写入到csv文件中的值
-                    if(domainUrl!=null && domainUrl.length()>0) {
+                    //组合写入到csv文件中的值
+                    if(syncDataType==2){
                         writer.write(new String[]{
                                 appTelecomLink.getId(),
                                 appTelecomLink.getAppApplicationName(),
                                 DateUtil.getDefaultDateStr("yyyy-MM-dd HH:mm:ss", appTelecomLink.getAppAddTime()),
-                                domainUrl,
+                                "",
 
                                 appDownloadUrl
                         });
+                    }else {
+                        if (domainUrl != null && domainUrl.length() > 0) {
+                            writer.write(new String[]{
+                                    appTelecomLink.getId(),
+                                    appTelecomLink.getAppApplicationName(),
+                                    DateUtil.getDefaultDateStr("yyyy-MM-dd HH:mm:ss", appTelecomLink.getAppAddTime()),
+                                    domainUrl,
+
+                                    appDownloadUrl
+                            });
+                        }
                     }
                 }
                 writer.flush();

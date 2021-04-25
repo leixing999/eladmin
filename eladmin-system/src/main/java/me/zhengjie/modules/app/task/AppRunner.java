@@ -43,7 +43,9 @@ public class AppRunner implements ApplicationRunner {
     @Value("${file.apk.isDump}")
     int isDump;
 
-
+    //是否同步
+    @Value("${file.apk.isSync}")
+    Integer isSync;
     @Autowired
     AppService appService;
 
@@ -52,122 +54,133 @@ public class AppRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        //启动静态分析线程
-        new Thread(){
-            @Override
-            public void run() {
-                while (true){
-                    try {
-                        //是否开启静态分析(1开启，0：关闭）
-                        if(isStatic==1){
-                            appService.staticAnalyseApp();
+        if(isStatic==1) {
+            //启动静态分析线程
+            new Thread() {
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            //是否开启静态分析(1开启，0：关闭）
+                           // if (isStatic == 1) {
+                                appService.staticAnalyseApp();
+                           // }
+
+                            Thread.sleep(100000);
+                        } catch (Exception ex) {
+                            System.out.println(ex);
                         }
 
-                        Thread.sleep(100000);
-                    }catch (Exception ex){
-                        System.out.println(ex);
                     }
-
                 }
-            }
-        }.start();
+            }.start();
+        }
 
 
         //启动FTP下载进程
-        new Thread(){
-            @Override
-            public void run() {
-                while (true){
-                    try {
-                        //启动FTP下载进程(1开启，0：关闭）
-                        if(isFtpDownload==1){
-                            appService.ftpDownloadAppUrlFiles();
+        if(isFtpDownload==1){
+            new Thread(){
+                @Override
+                public void run() {
+                    while (true){
+                        try {
+                            //启动FTP下载进程(1开启，0：关闭）
+                          //  if(isFtpDownload==1){
+                                appService.ftpDownloadAppUrlFiles();
+                          //  }
+
+                            Thread.sleep(100000);
+                        }catch (Exception ex){
+                            System.out.println(ex);
                         }
 
-                        Thread.sleep(100000);
-                    }catch (Exception ex){
-                        System.out.println(ex);
                     }
-
                 }
-            }
-        }.start();
-
+            }.start();
+        }
 
         //启动动态解析进程
-        new Thread(){
-            @Override
-            public void run() {
-                while (true){
-                    try {
-                        //启动动态解析进程(1开启，0：关闭）
-                        if(isDynamicParse==1){
-                            appService.dynamicAnalyseApp();
+        if(isDynamicParse==1) {
+            new Thread() {
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            //启动动态解析进程(1开启，0：关闭）
+                            //if (isDynamicParse == 1) {
+                                appService.dynamicAnalyseApp();
+                           // }
+
+                            Thread.sleep(100000);
+                        } catch (Exception ex) {
+                            System.out.println(ex);
                         }
 
-                        Thread.sleep(100000);
-                    }catch (Exception ex){
-                        System.out.println(ex);
                     }
-
                 }
-            }
-        }.start();
+            }.start();
+        }
 
+        if(isWhitelist==1) {
+            //启动白名单进程
+            new Thread() {
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            //是否开启白名单(1开启，0：关闭）
+                           // if (isWhitelist == 1) {
+                                appService.runAppWhiteList();
+                          //  }
 
-        //启动白名单进程
-        new Thread(){
-            @Override
-            public void run() {
-                while (true){
-                    try {
-                        //是否开启白名单(1开启，0：关闭）
-                        if(isWhitelist==1){
-                            appService.runAppWhiteList();
+                            Thread.sleep(100000);
+                        } catch (Exception ex) {
+                            System.out.println(ex);
                         }
 
-                        Thread.sleep(100000);
-                    }catch (Exception ex){
-                        System.out.println(ex);
                     }
-
                 }
-            }
-        }.start();
+            }.start();
+        }
+
 
 
         //启动脱壳进程
-        new Thread(){
-            @Override
-            public void run() {
-                while (true){
-                    try {
-                        //是否开启脱壳(1开启，0：关闭）
-                        if(isDump==1){
-                            appService.dumpAnalyseApp();
+        if(isDump==1) {
+            new Thread() {
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            //是否开启脱壳(1开启，0：关闭）
+                           // if (isDump == 1) {
+                                appService.dumpAnalyseApp();
+                          // }
+
+                            Thread.sleep(100000);
+                        } catch (Exception ex) {
+                            System.out.println(ex);
                         }
 
-                        Thread.sleep(100000);
-                    }catch (Exception ex){
-                        System.out.println(ex);
                     }
-
                 }
-            }
-        }.start();
+            }.start();
+        }
 
 
         //启动同步数据进程
-        new Thread(){
-            @Override
-            public void run() {
-                try {
-                    appDataSyncRunner.run();
-                } catch (Exception ex) {
-                    System.out.println(ex);
+        if(isSync==1) {
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        appDataSyncRunner.run();
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
                 }
-            }
-        }.start();
+            }.start();
+        }
 
 
 

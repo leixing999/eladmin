@@ -43,7 +43,7 @@ public class CrawlerUtils {
             } catch (IOException e) {
                 LOGGER.error("IOException", e);
             }
-            res = doWaitFor(ps, 30 * time++);
+            res = doWaitFor(ps, 90 * time++);
             if (res != 0) {
                 LOGGER.warn("Wget download failed...");
             } else {
