@@ -13,6 +13,7 @@ import me.zhengjie.modules.app.service.AppDictService;
 import me.zhengjie.modules.test.service.ITestService;
 import me.zhengjie.utils.DateUtil;
 import me.zhengjie.utils.FTPUtil;
+import me.zhengjie.utils.SFTPUtil;
 import me.zhengjie.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,9 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
@@ -95,7 +98,8 @@ public class AppDataSyncRunner {
                 try {
                     //copyQuesttionApp();
                     uploadToClient();
-                    Thread.sleep(10000);
+                    //12小时同步一次
+                    Thread.sleep(1000*60*60*12);
                 } catch (Exception ex) {
                     System.out.println(ex);
                 }
@@ -160,6 +164,8 @@ public class AppDataSyncRunner {
         /********开始同步黑名单信息****************/
         List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(1,1,-1,0);
         //去重
+        list =  list.stream().filter(s->s.getAppApplicationName()!=null).collect(Collectors.toList());
+
         List<AppTelecomLink>  nopeatList= list.stream().collect(
                 collectingAndThen(
                         toCollection(() -> new TreeSet<>(Comparator.comparing(AppTelecomLink::getAppApplicationName))), ArrayList::new)
@@ -170,8 +176,10 @@ public class AppDataSyncRunner {
 
         /********开始同步灰名单信息****************/
         //获取机器不能处理APP信息
+
         list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsDynamicAndAppIsSync(1,2,0,0);
         //去重
+        list =  list.stream().filter(s->s.getAppApplicationName()!=null).collect(Collectors.toList());
         nopeatList= list.stream().collect(
                 collectingAndThen(
                         toCollection(() -> new TreeSet<>(Comparator.comparing(AppTelecomLink::getAppApplicationName))), ArrayList::new)
@@ -189,7 +197,8 @@ public class AppDataSyncRunner {
     private void createSyncData( List<AppTelecomLink> list ,List<AppTelecomLink> nopeatList,int syncDataType){
         //判断是否存在可上传的文件
         if(nopeatList.size()>0) {
-            String csvPath = tempDir + File.separator + UUID.randomUUID()+"_"+syncDataType + ".csv";
+            String fileName = UUID.randomUUID()+"_"+syncDataType + ".csv";
+            String csvPath = tempDir + File.separator + fileName;
             // 通过工具类创建writer，默认创建xls格式
             CsvWriter writer = CsvUtil.getWriter(csvPath, CharsetUtil.CHARSET_GBK);
             try {
@@ -222,10 +231,12 @@ public class AppDataSyncRunner {
                 }
                 writer.flush();
                 writer.close();
-//                List fileList = new ArrayList();
-//                fileList.add(new File(csvPath));
-//                //上传FTP指定目录上
-//                new FTPUtil(ip, port, user, password).uploadFile(fileList, dir);
+
+                /***beginSFTP上传文件**/
+
+                sftpSync(csvPath,fileName,"/",dir);
+
+                /***endSFTP上传文件**/
 
                 //更新状态
                 for (AppTelecomLink appTelecomLink : list) {
@@ -241,6 +252,27 @@ public class AppDataSyncRunner {
         }
     }
 
+
+    /****
+     * sftp数据同步
+     * @param fileNamePath
+     * @param fileName
+     * @param basePath
+     * @param dir
+     */
+    private void sftpSync(String fileNamePath,String fileName,String basePath,String dir){
+        try {
+            SFTPUtil sftp = new SFTPUtil(user, password, ip, port);
+            sftp.login();
+            File file = new File(fileNamePath);
+            InputStream is = new FileInputStream(file);
+
+            sftp.upload(basePath, dir, fileName, is);
+            sftp.logout();
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+    }
     /****
      * 获取app的域名信息
      * @param appId

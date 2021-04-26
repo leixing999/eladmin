@@ -199,13 +199,13 @@ file:
         ###IP
         ip: 39.99.185.7
         ###端口
-        port: 21
+        port: 22
         ###用户名
         user: shxp
         ###密码
-        password: shxp
+        password: Play651419
         ###请求路径
-        dir: /apk/
+        dir: /db/0416/
         ####生成上传文件的临时目录
         tempDir: g:\
 #####虚拟机配置环境
