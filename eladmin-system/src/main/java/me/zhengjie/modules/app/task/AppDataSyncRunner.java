@@ -92,6 +92,10 @@ public class AppDataSyncRunner {
     int  exportPageSize;
 
 
+    //是否开启SFTP同步结果(1开启，0：关闭）
+    @Value("${file.apk.isSftpSync}")
+    int  isSftpSync;
+
     public void run() throws Exception {
         if(isSync==1) {
             while (true) {
@@ -211,6 +215,7 @@ public class AppDataSyncRunner {
                         writer.write(new String[]{
                                 appTelecomLink.getId(),
                                 appTelecomLink.getAppApplicationName(),
+                                appTelecomLink.getAppPackageName(),
                                 DateUtil.getDefaultDateStr("yyyy-MM-dd HH:mm:ss", appTelecomLink.getAppAddTime()),
                                 "",
 
@@ -221,6 +226,7 @@ public class AppDataSyncRunner {
                             writer.write(new String[]{
                                     appTelecomLink.getId(),
                                     appTelecomLink.getAppApplicationName(),
+                                    appTelecomLink.getAppPackageName(),
                                     DateUtil.getDefaultDateStr("yyyy-MM-dd HH:mm:ss", appTelecomLink.getAppAddTime()),
                                     domainUrl,
 
@@ -234,7 +240,9 @@ public class AppDataSyncRunner {
 
                 /***beginSFTP上传文件**/
 
-                sftpSync(csvPath,fileName,"/",dir);
+                if(isSftpSync==1) {
+                    sftpSync(csvPath, fileName, "/", dir);
+                }
 
                 /***endSFTP上传文件**/
 

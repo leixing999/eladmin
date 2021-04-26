@@ -151,6 +151,8 @@ file:
     isDynamicParse: 1
     ####是否同步分析结果给电信(1开启，0：关闭）
     isSync: 1
+    ####是否开启SFTP同步结果(1开启，0：关闭）
+    isSftpSync: 1
     #####导出文件大小
     exportFileSize: 31857600
     #####导出分页大小
