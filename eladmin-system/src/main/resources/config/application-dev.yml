@@ -123,13 +123,13 @@ file:
     ####白名单APK存放地址
     path: /home/media
     ####存放电信推送电信诈骗url文件地址
-    urlPath: d:\apk\url
+    urlPath: H:\apk\url
     ####支持每批次最多几个线程下载
     maxThread: 10
     ####支持下载的最大文件限制
     maxFileSize: 64857600
     ####app 下载保存的路径
-    appSavePath: d:\apk\apkdownload\
+    appSavePath: H:\apk\apkdownload\
     ####是否开启权限入库(1开启，0：关闭）
     isPermission: 0
     ####是否开启白名单(1开启，0：关闭）
@@ -137,9 +137,9 @@ file:
     ###是否开启静态分析(1开启，0：关闭）
     isStatic: 0
     ####是否开启解析URL(1开启，0：关闭）
-    isParse: 0
+    isParse: 1
     ####是否开启扫描文件夹(1开启，0：关闭）
-    isSearch: 0
+    isSearch: 1
     ####是否启用FTP 下载(1开启，0：关闭）
     isFtpDownload: 0
     ####是否开启过滤文件保存(1开启，0：关闭）
@@ -150,9 +150,9 @@ file:
     ####是否开启动态解析APK(1开启，0：关闭）
     isDynamicParse: 0
     ####是否同步分析结果给电信(1开启，0：关闭）
-    isSync: 1
+    isSync: 0
     ####是否开启SFTP同步结果(1开启，0：关闭）
-    isSftpSync: 1
+    isSftpSync: 0
 
     #####导出文件大小
     exportFileSize: 31857600

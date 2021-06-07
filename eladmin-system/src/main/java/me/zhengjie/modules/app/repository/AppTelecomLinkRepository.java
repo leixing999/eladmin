@@ -74,7 +74,7 @@ public interface AppTelecomLinkRepository extends JpaRepository<AppTelecomLink, 
      * @param isAnalyse
      * @return
      */
-    List<AppTelecomLink> findByAppIsDownAndAppTypeAndAppIsAnalyse(int isDown,int appType,int isAnalyse);
+    List<AppTelecomLink> findByAppIsDownAndAppTypeAndAppIsAnalyseOrderByAppAddTimeDesc(int isDown,int appType,int isAnalyse);
     /***
      * 搜索没有脱壳分析的APP
      * @param isDown

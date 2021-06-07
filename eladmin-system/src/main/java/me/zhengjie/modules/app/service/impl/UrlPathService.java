@@ -49,6 +49,28 @@ public class UrlPathService {
     }
 
 
+    /****
+     * 解析url文本串功能函数
+     * @param urlText
+     * @return
+     */
+    private String [] getUrlParams(String urlText){
+        String [] urlSplit = urlText.split("\\t");
+        String [] urlSplitParam = new String[3];
+        if(urlSplit.length<=3){
+            return urlSplit;
+        }else if(urlSplit.length==4){
+            for(int i=1;i<4;i++){
+                urlSplitParam[i-1] = urlSplit[i];
+            }
+
+        }else{
+             urlSplitParam = new String[1];
+        }
+        return urlSplitParam;
+
+
+    }
 
     /***
      * 解析文本文件原始行信息转换成实际apk文件路径信息
@@ -61,7 +83,8 @@ public class UrlPathService {
             UrlPathVO pathVO = new UrlPathVO();
             String orignUrlPath = path;
             //解析url进行分割
-            String [] urlSplit = orignUrlPath.split("\\t");
+//            String [] urlSplit = orignUrlPath.split("\\t");
+            String [] urlSplit = this.getUrlParams(orignUrlPath);
             if(urlSplit.length==3){
                 try {
                     String decodeUrlPath = URLDecoderString(ConverPercent.convertPercent(urlSplit[0]));

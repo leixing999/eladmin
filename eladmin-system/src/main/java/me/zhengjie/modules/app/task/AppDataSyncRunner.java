@@ -116,10 +116,12 @@ public class AppDataSyncRunner {
      * 将问题app处理
      */
     public void copyQuesttionApp(){
-        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsAnalyse(1,1,1);
+        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsAnalyseOrderByAppAddTimeDesc(1,1,1);
+
         for(AppTelecomLink appTelecomLink : list){
            String   appDownloadUrl = appSavePath + appTelecomLink.getAppSysRelativePath() + File.separator + appTelecomLink.getAppSysFileName();
-           String   appSaveTarget = appSavePath +File.separator +"question/"+ appTelecomLink.getAppSysFileName();
+          // String   appSaveTarget = appSavePath +File.separator +"question/"+ appTelecomLink.getAppSysFileName();
+            String   appSaveTarget = appSavePath +File.separator +"question/"+ appTelecomLink.getAppApplicationName()+".apk";
             int index = 0;
            try {
                if(index<exportPageSize) {
@@ -140,12 +142,16 @@ public class AppDataSyncRunner {
      * 将问题app处理
      */
     public void copyHsQuesttionApp(){
-        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsAnalyse(1,2,1);
+        List<AppTelecomLink> list = appTelecomLinkRepository.findByAppIsDownAndAppTypeAndAppIsAnalyseOrderByAppAddTimeDesc(1,2,1);
 
         int index = 0;
         for(AppTelecomLink appTelecomLink : list){
             String   appDownloadUrl = appSavePath + appTelecomLink.getAppSysRelativePath() + File.separator + appTelecomLink.getAppSysFileName();
+/*
             String   appSaveTarget = appSavePath +File.separator +"hsquestion/"+ appTelecomLink.getAppSysFileName();
+*/
+            String   appSaveTarget = appSavePath +File.separator +"hsquestion/"+ appTelecomLink.getAppApplicationName()+".apk";
+
             try {
                 if(index<exportPageSize) {
                     if(appTelecomLink.getAppFileSize()<exportFileSize) {
